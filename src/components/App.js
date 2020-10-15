@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Content } from './Content';
-import { SelectedItem } from './SelectedItem';
 import { SidebarMenu } from './Sidebar/Sidebar';
 
 function App() {
@@ -13,8 +12,8 @@ function App() {
   return (
     <>
       <SidebarMenu></SidebarMenu>
-      <div className="p-grid">
-        <div className="p-col-6 p-offset-3">
+      <div className="p-grid p-mt-6">
+        <div className="p-col-10 p-offset-1 p-md-6 p-md-offset-3 ">
           <Content setSelected={onSelect} />
         </div>
       </div>
@@ -23,5 +22,3 @@ function App() {
 }
 
 export { App };
-
-//<SelectedItem selections={selections} /> per passare dati ad una funzione esterna

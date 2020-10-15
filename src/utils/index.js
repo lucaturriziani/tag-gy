@@ -1,5 +1,3 @@
-import { colorRandom } from './color.js';
-
 function checkDirection(startNode, endNode){
   if(Number(startNode.id) > Number(endNode.id)){
     return [endNode,startNode];
@@ -49,21 +47,19 @@ function removeHighlight(){
   parent.removeChild(this);
 }
 
-function highlightRange(range) {
+function highlightRange(range, tag) {
   const newNode = document.createElement('mark');
-  let color = colorRandom();
-  console.log(color);
-  newNode.setAttribute('style', 'background: rgb('+color[0]+","+color[1]+","+color[2]+")");
+  newNode.setAttribute('style', 'background: rgb('+tag.color[0]+","+tag.color[1]+","+tag.color[2]+")");
   newNode.setAttribute('class', 'c0001');
   newNode.addEventListener('click', removeHighlight);
   range.surroundContents(newNode);
 }
 
-function highlightSelection() {
+function highlightSelection(tag) {
   const userSelection = window.getSelection();
   const [safeRange, stringSelect] = getSafeRanges(userSelection);
   if(safeRange !== null){
-    highlightRange(safeRange)
+    highlightRange(safeRange, tag)
   }
   window.getSelection().removeAllRanges();
   return stringSelect;
