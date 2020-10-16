@@ -1,0 +1,12 @@
+.tag-gy-footer {
+    width: 100%;
+    right: 0;
+    bottom: 0;
+    outline: 0;
+    z-index: 20;
+    position: fixed;
+}
+.tag-gy-footer .p-button-icon-only{
+    width: 22%;
+    margin-left: 1.25%;
+}

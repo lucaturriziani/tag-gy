@@ -43,3 +43,11 @@
     line-height: inherit;
     cursor: pointer;
 }
+
+h4{
+    color: var(--primary-color);
+}
+
+.menu-option{
+    font-weight: bold;
+}

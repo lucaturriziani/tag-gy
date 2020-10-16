@@ -14,8 +14,8 @@ body {
 }
 
 .c0002{
-  margin: 0 1px;
   display: inline-block;
+  margin: 0 0.15em;
 }
 
 .c0003{
@@ -25,6 +25,24 @@ body {
 
 .c0003 *::selection {
   background: #ffe184;
+}
+
+.c0004 {
+    color: #583fcf;
+    font-size: 0.675em;
+    font-weight: bold;
+    font-family: "Roboto Condensed", "Arial Narrow", sans-serif;
+    margin-left: 8px;
+    text-transform: uppercase;
+    vertical-align: middle;
+}
+
+.c0005 {
+  display: inline;
+  padding: 0.25em 0.4em;
+  font-weight: bold;
+  line-height: 1;
+  -webkit-box-decoration-break: clone;
 }
 
 mark{
