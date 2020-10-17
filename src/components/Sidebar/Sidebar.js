@@ -32,7 +32,7 @@ export class SidebarMenu extends Component {
                     <h1>tag-gy</h1>
                     <Line></Line>
                     <h4>PROGRESS</h4>
-                    <div class="p-mb-3"><ProgressBar value={this.props.total}></ProgressBar></div>
+                    <div className="p-mb-3"><ProgressBar value={this.props.total} showValue={false}></ProgressBar></div>
                     <div className="p-d-flex p-jc-between">
                         <div className="menu-option">ACCEPT</div>
                         <div>{this.props.accept}</div>

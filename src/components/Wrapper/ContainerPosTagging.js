@@ -10,6 +10,8 @@ import './ContainerPosTagging.css'
 import { Button } from 'primereact/button';
 import { AcceptTag } from '../Footer/Footer';
 
+window.$currentTag = []
+
 export class ContainerPosTagging extends Component {
 
     constructor(props) {
@@ -17,9 +19,9 @@ export class ContainerPosTagging extends Component {
 
         this.state = {
             tagg: [{ name: 'PROVA', color: [] }, { name: 'PROVA1', color: [] }, { name: 'PROVA2', color: [] }],
-            sentences: ["L'università può essere un vero schifo", "Figa che bella la figa che balla, citazione del sommo maestro"],
+            sentences: ["Everyone knows all about my transgressions still in my heart somewhere, there's melody and harmony for you and me, tonight", "Figa che bella la figa che balla, citazione del sommo maestro", "But the way that we love in the night gave me life baby, I can't explain"],
             selectedTag: null,
-            count: 0
+            highlight: () => {highlightAlredyInsert(this.tagged[this.props.count])}
         }
 
         this.tagged = [];
@@ -27,68 +29,40 @@ export class ContainerPosTagging extends Component {
     }
 
     acceptSentences = () => {
-        if (this.state.count <= this.state.sentences.length - 1) {
+        if (this.props.count < this.state.sentences.length) {
+            this.tagged[this.props.count] = window.$currentTag 
+            removeAllHighlights();
             this.props.accept(100 / this.state.sentences.length);
-            this.changeSentences('+');
         }
     }
 
     rejectSentences = () => {
-        if (this.state.count <= this.state.sentences.length - 1) {
+        if (this.props.count < this.state.sentences.length) {
+            this.tagged[this.props.count] = window.$currentTag 
+            removeAllHighlights();
             this.props.reject(100 / this.state.sentences.length);
-            this.changeSentences('+');
         }
     }
 
     ignoreSentences = () => {
-        if (this.state.count <= this.state.sentences.length - 1) {
-            this.props.ignore(100 / this.state.sentences.length);
-            this.changeSentences('+');
-        }
-    }
-
-    changeSentences(operation) {
-        if ((String(operation) === '+' && this.state.count < this.state.sentences.length - 1) ||
-            (String(operation) === '-' && this.state.count !== 0)) {
+        if (this.props.count < this.state.sentences.length) {
+            this.tagged[this.props.count] = window.$currentTag 
             removeAllHighlights();
-            this.setState(state => {
-                const tags = state.tagg;
-                const selectedTag = state.selectedTag;
-                const sentences = state.sentences;
-                let count;
-                switch (String(operation)) {
-                    case '+': {
-                        count = state.count + 1;
-                        break;
-                    }
-                    case '-': {
-                        count = state.count - 1;
-                        break;
-                    }
-                    default: break;
-                }
-
-                if (this.tagged[count]) {
-                    highlightAlredyInsert(this.tagged[count])
-                }
-
-                return {
-                    sentences,
-                    count,
-                    tags,
-                    selectedTag
-                };
-
-            });
-        } else if (this.state.count > this.state.sentences.length - 1) {
-            this.setState({ count: this.state.sentences.length });
+            this.props.ignore(100 / this.state.sentences.length);
         }
     }
 
     previousSentences = () => {
-        if(this.state.count !== 0){
+        if (this.props.count !== 0) {
+            removeAllHighlights();
             this.props.back(100 / this.state.sentences.length);
-            this.changeSentences('-');
+        }
+    }
+
+    highlight(){
+        if(this.tagged[this.props.count]){
+            window.$currentTag = this.tagged[this.props.count]
+            highlightAlredyInsert(this.tagged[this.props.count])
         }
     }
 
@@ -121,14 +95,12 @@ export class ContainerPosTagging extends Component {
 
             const s = window.getSelection().toString();
 
-            console.log(s);
             if (s === '') {
                 return;
             }
             let [startId, endId, stringSelected] = highlightSelection(this.state.selectedTag);
-            console.log(startId+" "+endId)
             if (startId !== null && endId !== null && stringSelected !== null) {
-                this.tagged[this.state.count].push({
+                window.$currentTag.push({
                     startId: startId,
                     endId: endId,
                     string: stringSelected,
@@ -144,7 +116,7 @@ export class ContainerPosTagging extends Component {
                 .replace("?", " ?")
                 .replace("!", " !")
                 .replace("%", " %")
-                .replace("'", " ' ")
+                .replace("'", " '")
                 .replace("\"", " \" ");
             const splitted = String(text).split(" ");
             return splitted;
@@ -172,9 +144,9 @@ export class ContainerPosTagging extends Component {
         return (
             <>
                 <Toast className="t" ref={(el) => this.toast = el} position="top-center" />
-                {this.state.sentences[this.state.count] !== undefined ?
+                {this.state.sentences[this.props.count] !== undefined ?
                     <Card className="ui-card-shadow wrapper c0003" header={header}>
-                        <div onMouseUp={onMouseUp}>{divideText(this.state.sentences[this.state.count]).map((item, index) => {
+                        <div onMouseUp={onMouseUp}>{divideText(this.state.sentences[this.props.count]).map((item, index) => {
                             return <span className='c0002' id={index} key={index}>{item}</span>
                         })}
                         </div>
@@ -187,3 +159,5 @@ export class ContainerPosTagging extends Component {
         )
     }
 }
+
+export {};
