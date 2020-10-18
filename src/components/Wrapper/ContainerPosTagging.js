@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import { Card } from 'primereact/card';
-import { Toast } from 'primereact/toast';
-import { OverlayPanel } from 'primereact/overlaypanel';
-import { Column } from 'primereact/column';
-import { DataTable } from 'primereact/datatable';
 import { highlightSelection, removeAllHighlights, highlightAlredyInsert } from '../../utils/highlight';
 import { colorRandom } from '../../utils/color.js';
 import './ContainerPosTagging.css'
-import { Button } from 'primereact/button';
 import { AcceptTag } from '../Footer/Footer';
+import { ScrollPanel } from 'primereact/scrollpanel';
+import { App } from '../App'
 
 window.$currentTag = []
 
@@ -18,10 +15,9 @@ export class ContainerPosTagging extends Component {
         super(props);
 
         this.state = {
-            tagg: [{ name: 'PROVA', color: [] }, { name: 'PROVA1', color: [] }, { name: 'PROVA2', color: [] }],
+            tagg: [{ name: 'PROVA', color: [] }, { name: 'PROVA1', color: [] }, { name: 'PROVA2', color: [] }, { name: 'PROVA3', color: [] }, { name: 'PROVA4', color: [] }, { name: 'PROVA5', color: [] }],
             sentences: ["Everyone knows all about my transgressions still in my heart somewhere, there's melody and harmony for you and me, tonight", "Figa che bella la figa che balla, citazione del sommo maestro", "But the way that we love in the night gave me life baby, I can't explain"],
-            selectedTag: null,
-            highlight: () => {highlightAlredyInsert(this.tagged[this.props.count])}
+            selectedTag: null
         }
 
         this.tagged = [];
@@ -30,7 +26,7 @@ export class ContainerPosTagging extends Component {
 
     acceptSentences = () => {
         if (this.props.count < this.state.sentences.length) {
-            this.tagged[this.props.count] = window.$currentTag 
+            this.tagged[this.props.count] = window.$currentTag
             removeAllHighlights();
             this.props.accept(100 / this.state.sentences.length);
         }
@@ -38,7 +34,7 @@ export class ContainerPosTagging extends Component {
 
     rejectSentences = () => {
         if (this.props.count < this.state.sentences.length) {
-            this.tagged[this.props.count] = window.$currentTag 
+            this.tagged[this.props.count] = window.$currentTag
             removeAllHighlights();
             this.props.reject(100 / this.state.sentences.length);
         }
@@ -46,7 +42,7 @@ export class ContainerPosTagging extends Component {
 
     ignoreSentences = () => {
         if (this.props.count < this.state.sentences.length) {
-            this.tagged[this.props.count] = window.$currentTag 
+            this.tagged[this.props.count] = window.$currentTag
             removeAllHighlights();
             this.props.ignore(100 / this.state.sentences.length);
         }
@@ -59,8 +55,8 @@ export class ContainerPosTagging extends Component {
         }
     }
 
-    highlight(){
-        if(this.tagged[this.props.count]){
+    highlight() {
+        if (this.tagged[this.props.count]) {
             window.$currentTag = this.tagged[this.props.count]
             highlightAlredyInsert(this.tagged[this.props.count])
         }
@@ -73,14 +69,15 @@ export class ContainerPosTagging extends Component {
         this.state.sentences.forEach(s => {
             this.tagged.push([])
         })
-        this.setState({ selectedTag: this.state.tagg[0] });
     }
 
-    onTagSelected(e) {
-        if (e.value !== this.state.selectedTag) {
-            this.setState({ selectedTag: e.value }, () => {
-                this.op.hide();
-            });
+    onTagSelected(tag) {
+        if (tag !== this.state.selectedTag) {
+            if (this.state.selectedTag !== null) {
+                document.getElementById('tag' + this.state.selectedTag.name).removeAttribute('style');
+            }
+            document.getElementById('tag' + tag.name).setAttribute('style', 'background-color: var(--primary-color');
+            this.setState({ selectedTag: tag });
         }
     }
 
@@ -88,7 +85,7 @@ export class ContainerPosTagging extends Component {
         const onMouseUp = () => {
 
             if (this.state.selectedTag == null) {
-                this.toast.show({ severity: 'error', summary: 'Error', detail: 'Please select a tag', life: 3000 });
+                App.visualizeToast('error', 'No tag selected', 'Please select or insert a tag');
                 window.getSelection().removeAllRanges();
                 return;
             }
@@ -122,16 +119,21 @@ export class ContainerPosTagging extends Component {
             return splitted;
         }
 
-        const header = (
+        //CREATE A NEW COMPONENT FOR THE TAG CONTAINER
+        const header1 = (
             <div className="p-grid">
-                <div className="p-col-12 p-md-6 p-ml-2 p-ml-md-4 p-mt-2">
-                    <Button onClick={(e) => this.op.toggle(e)} icon="pi pi-search" label={this.state.selectedTag ? this.state.selectedTag.name : 'Select a tag'} className="select-tag-button" aria-haspopup aria-controls="overlay_panel" />
-                    <OverlayPanel ref={(el) => this.op = el} showCloseIcon id="overlay_panel" style={{ width: '450px' }}>
-                        <DataTable value={this.state.tagg} selectionMode="single" paginator rows={2}
-                            selection={this.state.selectedTag} onSelectionChange={this.onTagSelected}>
-                            <Column field="name" header="Tag" sortable />
-                        </DataTable>
-                    </OverlayPanel>
+                <div className="p-col-fixed p-ml-sm-3 p-ml-xl-4 p-mt-2">
+                    <div className="box add-button p-mt-3 p-mr-2 p-ml-2 p-pl-4 p-pr-4" ><i className="pi pi-plus"/></div>
+                </div>
+                <div className="p-col-7 p-sm-8 p-xl-9 p-mt-2">
+                    <ScrollPanel style={{ width: '100%', height: '100%' }} className="tag-bar">
+                        <div className="p-d-flex p-mr-5">
+                            {this.state.tagg.map((tag, index) => {
+                                    return <div className="box p-mt-3 p-ml-2 p-pl-3 p-pr-3" value={tag.name} key={index} id={'tag' + tag.name} onClick={() => this.onTagSelected(tag, index)}>{tag.name}</div>
+                            })}
+                            <div className="p-pl-4">&nbsp;</div>
+                        </div>
+                    </ScrollPanel>
                 </div>
             </div>
         );
@@ -143,9 +145,8 @@ export class ContainerPosTagging extends Component {
         )
         return (
             <>
-                <Toast className="t" ref={(el) => this.toast = el} position="top-center" />
                 {this.state.sentences[this.props.count] !== undefined ?
-                    <Card className="ui-card-shadow wrapper c0003" header={header}>
+                    <Card className="ui-card-shadow wrapper c0003" header={header1}>
                         <div onMouseUp={onMouseUp}>{divideText(this.state.sentences[this.props.count]).map((item, index) => {
                             return <span className='c0002' id={index} key={index}>{item}</span>
                         })}
@@ -159,5 +160,3 @@ export class ContainerPosTagging extends Component {
         )
     }
 }
-
-export {};

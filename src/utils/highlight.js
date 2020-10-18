@@ -1,3 +1,5 @@
+import {App} from '../components/App'
+
 function checkDirection(startNode, endNode) {
   if (Number(startNode.id) > Number(endNode.id)) {
     return [endNode, startNode];
@@ -53,12 +55,15 @@ function removeHighlight(node) {
 
 function onClickRemoveHighlight() {
   let index = window.$currentTag.findIndex( t => {
-    const string = String(t.string).concat(String(t.tag)).replace(" ","");
-    return string=== this.textContent
+    let string = String(t.string).concat(String(t.tag.name)).replace(/\s/g,'');
+    return string === this.textContent
   });
-  window.$currentTag.splice(index,1)
-  console.log(window.$currentTag)
-  removeHighlight(this)
+  if(index !== -1){
+    window.$currentTag.splice(index,1)
+    removeHighlight(this)
+  }else{
+    App.visualizeToast('error','Element not found','It\'s impossible to remove the tag, please reload the page');
+  }
 }
 
 function removeAllHighlights() {
