@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Card } from 'primereact/card';
 import { highlightSelection, removeAllHighlights, highlightAlredyInsert } from '../../utils/highlight';
-import { colorRandom } from '../../utils/color.js';
 import './ContainerPosTagging.css'
 import { AcceptTag } from '../Footer/Footer';
 import { App } from '../App'
@@ -15,21 +14,19 @@ export class ContainerPosTagging extends Component {
         super(props);
 
         this.state = {
-            tagg: [],
             sentences: ["Everyone knows all about my transgressions still in my heart somewhere, there's melody and harmony for you and me, tonight", "Figa che bella la figa che balla, citazione del sommo maestro", "But the way that we love in the night gave me life baby, I can't explain"],
             selectedTag: null
         }
 
         this.tagged = [];
+        this.tagg = [];
         this.onTagSelected = this.onTagSelected.bind(this);
     }
 
     componentDidMount() {
-        this.state.tagg.forEach(tag => {
-            tag.color = colorRandom();
-        });
         this.state.sentences.forEach(s => {
             this.tagged.push([]);
+            this.tagg.push([]);
         })
     }
 
@@ -65,6 +62,11 @@ export class ContainerPosTagging extends Component {
     }
 
     highlight() {
+        const divTag = document.querySelectorAll('*[id^="tag-"]');
+        divTag.forEach(div => {
+            div.removeAttribute('style');
+        })
+        this.setState({selectedTag: null});
         if (this.tagged[this.props.count]) {
             window.$currentTag = this.tagged[this.props.count]
             highlightAlredyInsert(this.tagged[this.props.count])
@@ -74,9 +76,9 @@ export class ContainerPosTagging extends Component {
     onTagSelected = (tag) => {
         if (tag !== this.state.selectedTag) {
             if (this.state.selectedTag !== null) {
-                document.getElementById('tag' + this.state.selectedTag.name).removeAttribute('style');
+                document.getElementById('tag-' + this.state.selectedTag.name).removeAttribute('style');
             }
-            document.getElementById('tag' + tag.name).setAttribute('style', 'background-color: var(--primary-color');
+            document.getElementById('tag-' + tag.name).setAttribute('style', 'background-color: var(--primary-color');
             this.setState({ selectedTag: tag });
         }
     }
@@ -127,7 +129,7 @@ export class ContainerPosTagging extends Component {
         return (
             <>
                 {this.state.sentences[this.props.count] !== undefined ?
-                    <Card className="ui-card-shadow wrapper c0003" header={<Header onTagSelected={this.onTagSelected} tagg={this.state.tagg}></Header>}>
+                    <Card className="ui-card-shadow wrapper c0003" header={<Header onTagSelected={this.onTagSelected} tagg={this.tagg} count={this.props.count}></Header>}>
                         <div onMouseUp={onMouseUp}>{divideText(this.state.sentences[this.props.count]).map((item, index) => {
                             return <span className='c0002' id={index} key={index}>{item}</span>
                         })}
