@@ -77,7 +77,6 @@ function removeAllHighlights() {
 function highlightAlredyInsert(tags) {
   tags.forEach(t => {
     const startNode = document.getElementById(t.startId);
-    console.log(tags)
     const endNode = document.getElementById(t.endId);
     let range = document.createRange()
     range.setStartBefore(startNode);
