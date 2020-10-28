@@ -14,7 +14,7 @@ export class ContainerPosTagging extends Component {
         super(props);
 
         this.state = {
-            sentences: ["Everyone knows all about my transgressions still in my heart somewhere, there's melody and harmony for you and me, tonight", "Figa che bella la figa che balla, citazione del sommo maestro", "But the way that we love in the night gave me life baby, I can't explain"],
+            sentences: ["Everyone knows all about my transgressions still in my heart somewhere, there's melody and harmony for you and me, tonight", "And maybe that's the price you pay for the money and fame at an early age", "But the way that we love in the night gave me life baby, I can't explain", "And now it's clear as this promise that we're making two reflections into one 'cause it's like you're my mirror"],
             selectedTag: null
         }
 
