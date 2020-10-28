@@ -4,7 +4,7 @@
 
 The web app lets you annotate a variety of different formats, including plain text and images. Tag-gy expects annotation tasks to follow a simple JSON-style format. This format is also used to communicate tasks between REST API and web application, and will be used when exporting annotations.
 
-* **`POS mapping` _Annotate part-of-speech tags (manual)_**
+* **_Annotate part-of-speech tags (manual)_**
 
   ```json
   {
