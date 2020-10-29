@@ -8,6 +8,15 @@ To have more information about the framework used in this project you can click 
 
 ## Installation
 
+The recommended way to get started using the Node.js 3.0 driver is by using the npm (Node Package Manager) to install the dependency in your project.
+
+To install all the dependency the project requires, you have to execute:
+```bash
+npm install
+```
+
+## Quick start
+
 In the project directory, you can run:
 
 ### `node app.js`
