@@ -1,25 +1,40 @@
 const express = require('express')
+const bodyParser = require("body-parser");
+const cors = require("cors");
 const app = express()
 const port = 3001
 
-const sentences = ["Everyone knows all about my transgressions still in my heart somewhere, there's melody and harmony for you and me, tonight", "And maybe that's the price you pay for the money and fame at an early age", "But the way that we love in the night gave me life baby, I can't explain", "And now it's clear as this promise that we're making two reflections into one 'cause it's like you're my mirror"]
+var corsOptions = {
+  origin: "http://localhost:3000"
+};
 
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header('Access-Control-Allow-Methods', 'POST, GET, DELETE, PUT');
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  if ('OPTIONS' == req.method) {
-    res.sendStatus(200);
-  }
-  else {
-    next();
-  }
-});
+app.use(cors(corsOptions));
 
-app.get('/', (req, res) => {
-  res.send(sentences)
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+const db = require("./mongo");
+db.mongoose
+  .connect(db.url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => {
+    console.log("Connected to the database!");
+  })
+  .catch(err => {
+    console.log("Cannot connect to the database!", err);
+    process.exit();
+  });
+
+const POS = require("./controllers/controller.js");
+
+app.listen(port, ()=>{
+  console.log(`Server running on port ${port}`);
 })
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`)
-})
+app.get('/', POS.findAll)
+
+app.delete('/', POS.deleteAll)
+
+app.post('/init', POS.create)
