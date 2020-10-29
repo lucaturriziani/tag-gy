@@ -11,4 +11,6 @@ To install all the dependencies the project requires enter on the front-end and 
 ```bash
 npm install
 ```
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
 
