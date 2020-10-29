@@ -5,6 +5,8 @@ import './ContainerPosTagging.css'
 import { AcceptTag } from '../Footer/Footer';
 import { App } from '../App'
 import { Header } from '../Header/Header';
+import Axios from 'axios';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 window.$currentTag = []
 
@@ -14,8 +16,10 @@ export class ContainerPosTagging extends Component {
         super(props);
 
         this.state = {
-            sentences: ["Everyone knows all about my transgressions still in my heart somewhere, there's melody and harmony for you and me, tonight", "And maybe that's the price you pay for the money and fame at an early age", "But the way that we love in the night gave me life baby, I can't explain", "And now it's clear as this promise that we're making two reflections into one 'cause it's like you're my mirror"],
-            selectedTag: null
+            //sentences: ["Everyone knows all about my transgressions still in my heart somewhere, there's melody and harmony for you and me, tonight", "And maybe that's the price you pay for the money and fame at an early age", "But the way that we love in the night gave me life baby, I can't explain", "And now it's clear as this promise that we're making two reflections into one 'cause it's like you're my mirror"],
+            sentences: null,
+            selectedTag: null,
+            downloaded: false
         }
 
         this.tagged = [];
@@ -24,9 +28,19 @@ export class ContainerPosTagging extends Component {
     }
 
     componentDidMount() {
-        this.state.sentences.forEach(s => {
+        /*this.state.sentences.forEach(s => {
             this.tagged.push([]);
             this.tagg.push([]);
+        })*/
+        Axios.get(`http://localhost:3000`)
+            .then(res => {
+                const phrases = res.data;
+                phrases.forEach(p => {
+                    this.tagged.push([]);
+                    this.tagg.push([]);
+                })
+            this.setState({sentences : phrases});
+            this.setState({ downloaded: true });
         })
     }
 
@@ -85,6 +99,11 @@ export class ContainerPosTagging extends Component {
 
     render() {
         const onMouseUp = () => {
+            const s = window.getSelection().toString();
+
+            if (s === '') {
+                return;
+            }
 
             if (this.state.selectedTag == null) {
                 App.visualizeToast('error', 'No tag selected', 'Please select or insert a tag');
@@ -92,11 +111,6 @@ export class ContainerPosTagging extends Component {
                 return;
             }
 
-            const s = window.getSelection().toString();
-
-            if (s === '') {
-                return;
-            }
             let [startId, endId, stringSelected] = highlightSelection(this.state.selectedTag);
             if (startId !== null && endId !== null && stringSelected !== null) {
                 window.$currentTag.push({
@@ -128,17 +142,25 @@ export class ContainerPosTagging extends Component {
         )
         return (
             <>
-                {this.state.sentences[this.props.count] !== undefined ?
-                    <Card className="ui-card-shadow wrapper c0003" header={<Header onTagSelected={this.onTagSelected} tagg={this.tagg} count={this.props.count}></Header>}>
-                        <div onMouseUp={onMouseUp}>{divideText(this.state.sentences[this.props.count]).map((item, index) => {
-                            return <span className='c0002' id={index} key={index}>{item}</span>
-                        })}
-                        </div>
-                    </Card> :
-                    <Card className="ui-card-shadow wrapper" >{noDataContent}</Card>
-                }
+                {this.state.downloaded ?
+                    this.state.sentences.length > 0 ?
+                        this.state.sentences[this.props.count] !== undefined ?
+                            <Card className="ui-card-shadow wrapper c0003" header={<Header onTagSelected={this.onTagSelected} tagg={this.tagg} count={this.props.count}></Header>}>
+                                <div onMouseUp={onMouseUp}>{divideText(this.state.sentences[this.props.count]).map((item, index) => {
+                                    return <span className='c0002' id={index} key={index}>{item}</span>
+                                })}
+                                </div>
+                            </Card>
+                            :
+                            <Card className="ui-card-shadow wrapper" >{noDataContent}</Card>
+                        :
+                        <Card className="ui-card-shadow wrapper" >{noDataContent}</Card>
+                    :
+                    <div className="p-mt-6 p-ai-center">
+                        <ProgressSpinner style={{ width: '50px', height: '50px', display: 'block' }} strokeWidth="8" animationDuration=".5s" />
+                    </div>}
                 <AcceptTag back={this.previousSentences} accept={this.acceptSentences}
-                    reject={this.rejectSentences} ignore={this.ignoreSentences}></AcceptTag>
+                    reject={this.rejectSentences} ignore={this.ignoreSentences} disabled={this.state.downloaded}></AcceptTag>
             </>
         )
     }
