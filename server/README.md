@@ -2,6 +2,10 @@
 
 To have more information about the framework used in this project you can click to the follow link [express.js](https://expressjs.com/).
 
+## Prerequisites
+
+- Download the right MongoDB version from [MongoDB](https://www.mongodb.org/downloads), for complete MongoDB installation instructions, see [the manual](https://docs.mongodb.org/manual/installation/).
+
 ## Installation
 
 In the project directory, you can run:
