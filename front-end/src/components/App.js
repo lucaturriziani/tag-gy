@@ -80,7 +80,7 @@ export class App extends Component {
   render() {
     return (
       <>
-        <Toast className="t" ref={(el) => window.$toast = el} position="top-center" />
+        <Toast className="t" ref={(el) => window.$toast = el} position="bottom-left" />
         <SidebarMenu total={this.state.total} accept={this.state.accepted}
           reject={this.state.rejected} ignore={this.state.ignored}></SidebarMenu>
         <div className="p-grid p-mt-3 p-mt-md-6 p-mb-6 p-mr-0 p-ml-0">

@@ -32,7 +32,7 @@ export class ContainerPosTagging extends Component {
             this.tagged.push([]);
             this.tagg.push([]);
         })*/
-        Axios.get(`http://localhost:3000`)
+        Axios.get(`http://localhost:3001`)
             .then(res => {
                 const phrases = res.data;
                 phrases.forEach(p => {
