@@ -1,24 +1,22 @@
 module.exports = mongoose => {
-    var schema = mongoose.Schema(
+    const POS = mongoose.model(
+      "sentences",
+      mongoose.Schema(
         {
           text: String,
           spans: [
               {
                   start: Number,
                   end: Number,
+                  token: String,
                   label: String
               }
           ]
         },
         { timestamps: false }
-      );
+      )
+    );
 
-    schema.method("toJSON", function() {
-      const { __v, _id, ...object } = this.toObject();
-      object.id = _id;
-      return object;
-    });
-
-    const POS = mongoose.model("sentences", schema);
+  
     return POS;
   };

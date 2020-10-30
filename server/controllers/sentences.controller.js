@@ -20,7 +20,6 @@ const sentences = [
     })
 ];
 
-// Create and Save a new Tutorial
 exports.create = (req, res) => {
   sentences.forEach(s => {
         s.save()
@@ -36,7 +35,6 @@ exports.create = (req, res) => {
   });
 };
 
-// Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
     pieceOfSpeech.find()
     .then(data => {
@@ -50,17 +48,22 @@ exports.findAll = (req, res) => {
     });
 };
 
-// Find a single Tutorial with an id
-exports.findOne = (req, res) => {
-  
-};
-
-// Update a Tutorial by the id in the request
 exports.update = (req, res) => {
-  
+  pieceOfSpeech.findByIdAndUpdate(req.body._id, req.body, { useFindAndModify: false })
+  .then(data => {
+    if (!data) {
+      res.status(404).send({
+        message: `Cannot update object with id=${id}. Not found!`
+      });
+    } else res.status(200).send();
+  })
+  .catch(err => {
+    res.status(500).send({
+      message: "Error updating Tutorial with id=" + id
+    });
+  });
 };
 
-// Delete all Tutorials from the database.
 exports.deleteAll = (req, res) => {
     pieceOfSpeech.deleteMany({})
     .then(data => {
