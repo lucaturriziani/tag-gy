@@ -1,11 +1,12 @@
 import Axios from 'axios';
+import {urlMongo, urlNoDb} from '../environments/environment';
 
 function get(){
-    return Axios.get(`http://localhost:3001`);
+    return Axios.get(urlNoDb);
 }
 
 function put(data){
-    return Axios.put(`http://localhost:3001`,data);
+    return Axios.put(urlNoDb,data);
 }
 
 export {get, put};

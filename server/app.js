@@ -13,7 +13,7 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const db = require("./mongo");
+/*const db = require("./mongo");
 db.mongoose
   .connect(db.url, {
     useNewUrlParser: true,
@@ -26,15 +26,24 @@ db.mongoose
     console.log("Cannot connect to the database!", err);
     process.exit();
   });
-
+*/
 const POS = require("./controllers/controller.js");
+const noDb = require("./controllers/nodb.controller.js");
 
 app.listen(port, ()=>{
   console.log(`Server running on port ${port}`);
 })
 
+
+// MongoDB
 app.get('/', POS.findAll)
 
 app.delete('/', POS.deleteAll)
 
 app.post('/init', POS.create)
+
+
+// NoDB
+app.get('/nodb', noDb.getAll)
+
+app.put('/nodb', noDb.update)
