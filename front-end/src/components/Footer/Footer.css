@@ -7,16 +7,12 @@
     position: fixed;
 }
 .tag-gy-footer .p-button-icon-only{
-    width: 22%;
+    width: 30%;
     margin-left: 1.25%;
 }
 
 .p-ripple-green .p-ink {
     background: rgb(22, 134, 22);
-}
-
-.p-ripple-red .p-ink {
-    background: rgb(226, 7, 7);
 }
 
 .p-ripple-yellow .p-ink {

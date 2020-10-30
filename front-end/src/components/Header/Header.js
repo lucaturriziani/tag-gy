@@ -58,20 +58,14 @@ export class Header extends Component {
         if (this.state.value.includes(" ") || this.state.value.length > 8 || this.state.value === '') {
             return;
         }
-        if (this.props.tagg[this.props.count]) {
-            const index = this.props.tagg[this.props.count].findIndex(t => { return t.name.toUpperCase() === this.state.value.toUpperCase() });
-            if (index === -1) {
-                this.props.tagg[this.props.count].push({ name: this.state.value.toUpperCase(), color: colorRandom() });
-                this.setState({ value: '' });
-                this.onHide();
-                return;
-            }
-        } else {
-            this.props.tagg[this.props.count].push({ name: this.state.value.toUpperCase(), color: colorRandom() });
+        const index = this.props.tagg.findIndex(t => { return t.name.toUpperCase() === this.state.value.toUpperCase() });
+        if (index === -1) {
+            this.props.tagg.push({ name: this.state.value.toUpperCase(), color: colorRandom() });
             this.setState({ value: '' });
             this.onHide();
             return;
         }
+
         this.setState({ error2: true });
     }
 
@@ -105,10 +99,9 @@ export class Header extends Component {
                     <div className="p-col-7 p-sm-8 p-xl-9 p-mt-2">
                         <ScrollPanel style={{ width: '100%', height: '100%' }} className="tag-bar">
                             <div className="p-d-flex p-mr-5">
-                                {this.props.tagg[this.props.count] ? this.props.tagg[this.props.count].map((tag, index) => {
+                                {this.props.tagg ? this.props.tagg.map((tag, index) => {
                                     return <div className="box p-mt-3 p-ml-2 p-pl-3 p-pr-3" value={tag.name} key={index} id={'tag-' + tag.name} onClick={() => this.props.onTagSelected(tag)}>{tag.name}</div>
                                 }) : null}
-                                {console.log(this.props.tagg[this.props.count])}
                                 <div className="p-pl-4">&nbsp;</div>
                             </div>
                         </ScrollPanel>

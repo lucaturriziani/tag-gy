@@ -38,10 +38,6 @@ export class SidebarMenu extends Component {
                         <div>{this.props.accept}</div>
                     </div>
                     <div className="p-d-flex p-jc-between">
-                        <div className="menu-option">REJECT</div>
-                        <div>{this.props.reject}</div>
-                    </div>
-                    <div className="p-d-flex p-jc-between">
                         <div className="menu-option">IGNORE</div>
                         <div>{this.props.ignore}</div>
                     </div>

@@ -5,8 +5,8 @@ import './ContainerPosTagging.css'
 import { AcceptTag } from '../Footer/Footer';
 import { App } from '../App'
 import { Header } from '../Header/Header';
-import Axios from 'axios';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { get, put } from '../../service/pos.service';
 
 window.$currentTag = []
 
@@ -22,50 +22,43 @@ export class ContainerPosTagging extends Component {
             downloaded: false
         }
 
-        this.tagged = [];
+        // list of possible tag
         this.tagg = [];
         this.onTagSelected = this.onTagSelected.bind(this);
     }
 
     componentDidMount() {
-        /*this.state.sentences.forEach(s => {
-            this.tagged.push([]);
-            this.tagg.push([]);
-        })*/
-        Axios.get(`http://localhost:3001`)
-            .then(res => {
-                const phrases = res.data;
-                phrases.forEach(p => {
-                    this.tagged.push([]);
-                    this.tagg.push([]);
-                })
-            this.setState({sentences : phrases});
+        get().then(res => {
+            const phrases = res.data;
+            this.setState({ sentences: phrases });
             this.setState({ downloaded: true });
+            this.highlight();
         })
     }
 
     acceptSentences = () => {
         if (this.props.count < this.state.sentences.length) {
-            this.tagged[this.props.count] = window.$currentTag
-            removeAllHighlights();
-            this.props.accept(100 / this.state.sentences.length);
-        }
-    }
-
-    rejectSentences = () => {
-        if (this.props.count < this.state.sentences.length) {
-            this.tagged[this.props.count] = window.$currentTag
-            removeAllHighlights();
-            this.props.reject(100 / this.state.sentences.length);
+            put(this.state.sentences[this.props.count]).then(res => {
+                this.nextSententes()
+                this.props.accept(100 / this.state.sentences.length);
+            }).catch(err => {
+                console.log("update", err)
+            })
         }
     }
 
     ignoreSentences = () => {
         if (this.props.count < this.state.sentences.length) {
-            this.tagged[this.props.count] = window.$currentTag
-            removeAllHighlights();
+            this.nextSententes();
             this.props.ignore(100 / this.state.sentences.length);
         }
+    }
+
+    nextSententes() {
+        let list = this.state.sentences;
+        list[this.props.count].spans = window.$currentTag;
+        this.setState({ sentences: list });
+        removeAllHighlights();
     }
 
     previousSentences = () => {
@@ -76,14 +69,9 @@ export class ContainerPosTagging extends Component {
     }
 
     highlight() {
-        const divTag = document.querySelectorAll('*[id^="tag-"]');
-        divTag.forEach(div => {
-            div.removeAttribute('style');
-        })
-        this.setState({selectedTag: null});
-        if (this.tagged[this.props.count]) {
-            window.$currentTag = this.tagged[this.props.count]
-            highlightAlredyInsert(this.tagged[this.props.count])
+        if (this.state.sentences[this.props.count].spans) {
+            window.$currentTag = this.state.sentences[this.props.count].spans
+            highlightAlredyInsert(this.state.sentences[this.props.count].spans)
         }
     }
 
@@ -92,7 +80,7 @@ export class ContainerPosTagging extends Component {
             if (this.state.selectedTag !== null) {
                 document.getElementById('tag-' + this.state.selectedTag.name).removeAttribute('style');
             }
-            document.getElementById('tag-' + tag.name).setAttribute('style', 'background-color: var(--primary-color');
+            document.getElementById('tag-' + tag.name).setAttribute('style', 'background-color: '+tag.color);
             this.setState({ selectedTag: tag });
         }
     }
@@ -145,7 +133,7 @@ export class ContainerPosTagging extends Component {
                 {this.state.downloaded ?
                     this.state.sentences.length > 0 ?
                         this.state.sentences[this.props.count] !== undefined ?
-                            <Card className="ui-card-shadow wrapper c0003" header={<Header onTagSelected={this.onTagSelected} tagg={this.tagg} count={this.props.count}></Header>}>
+                            <Card className="ui-card-shadow wrapper c0003" header={<Header onTagSelected={this.onTagSelected} tagg={this.tagg}></Header>}>
                                 <div onMouseUp={onMouseUp}>{divideText(this.state.sentences[this.props.count]).map((item, index) => {
                                     return <span className='c0002' id={index} key={index}>{item}</span>
                                 })}
@@ -159,8 +147,7 @@ export class ContainerPosTagging extends Component {
                     <div className="p-mt-6 p-ai-center">
                         <ProgressSpinner style={{ width: '50px', height: '50px', display: 'block' }} strokeWidth="8" animationDuration=".5s" />
                     </div>}
-                <AcceptTag back={this.previousSentences} accept={this.acceptSentences}
-                    reject={this.rejectSentences} ignore={this.ignoreSentences} disabled={this.state.downloaded}></AcceptTag>
+                <AcceptTag back={this.previousSentences} accept={this.acceptSentences} ignore={this.ignoreSentences} disabled={this.state.downloaded}></AcceptTag>
             </>
         )
     }

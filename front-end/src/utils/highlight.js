@@ -87,7 +87,7 @@ function highlightAlredyInsert(tags) {
 
 function highlightRange(range, tag) {
   const newNode = document.createElement('mark');
-  newNode.setAttribute('style', 'background: rgb(' + tag.color[0] + "," + tag.color[1] + "," + tag.color[2] + ")");
+  newNode.setAttribute('style', 'background:'+tag.color);
   newNode.setAttribute('class', 'c0001 c0005');
   newNode.addEventListener('click', onClickRemoveHighlight);
   range.surroundContents(newNode);
