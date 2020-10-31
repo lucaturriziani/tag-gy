@@ -4,7 +4,7 @@ import { ScrollPanel } from 'primereact/scrollpanel';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { colorRandom } from '../../utils/color'
+import { colorRandom } from '../../utils/color';
 
 export class Header extends Component {
 
@@ -58,9 +58,9 @@ export class Header extends Component {
         if (this.state.value.includes(" ") || this.state.value.length > 8 || this.state.value === '') {
             return;
         }
-        const index = this.props.tagg.findIndex(t => { return t.name.toUpperCase() === this.state.value.toUpperCase() });
+        const index = this.props.availTag.findIndex(t => { return t.name.toUpperCase() === this.state.value.toUpperCase() });
         if (index === -1) {
-            this.props.tagg.push({ name: this.state.value.toUpperCase(), color: colorRandom() });
+            this.props.availTag.push({ name: this.state.value.toUpperCase(), color: colorRandom(), count: 0 });
             this.setState({ value: '' });
             this.onHide();
             return;
@@ -99,7 +99,7 @@ export class Header extends Component {
                     <div className="p-col-7 p-sm-8 p-xl-9 p-mt-2">
                         <ScrollPanel style={{ width: '100%', height: '100%' }} className="tag-bar">
                             <div className="p-d-flex p-mr-5">
-                                {this.props.tagg ? this.props.tagg.map((tag, index) => {
+                                {this.props.availTag ? this.props.availTag.map((tag, index) => {
                                     return <div className="box p-mt-3 p-ml-2 p-pl-3 p-pr-3" value={tag.name} key={index} id={'tag-' + tag.name} onClick={() => this.props.onTagSelected(tag)}>{tag.name}</div>
                                 }) : null}
                                 <div className="p-pl-4">&nbsp;</div>

@@ -28,8 +28,6 @@ db.mongoose
   });
   
 const POS = require("./controllers/sentences.controller.js");
-const Tags = require("./controllers/tags.controller.js");
-const noDb = require("./controllers/nodb.controller.js");
 
 app.listen(port, ()=>{
   console.log(`Server running on port ${port}`);
@@ -45,15 +43,4 @@ app.delete('/reset', POS.deleteAll)
 
 app.post('/init', POS.create)
 
-app.post('/tags', Tags.create)
-
-app.delete('/tags', Tags.delete)
-
-app.get('/tags', Tags.findAll)
-
-
-
-// NoDB
-app.get('/nodb', noDb.getAll)
-
-app.put('/nodb', noDb.update)
+app.get('/tags', POS.getAllTag)

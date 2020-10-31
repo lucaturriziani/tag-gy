@@ -55,7 +55,7 @@ function removeHighlight(node) {
 
 function onClickRemoveHighlight() {
   let index = window.$currentTag.findIndex( t => {
-    let string = String(t.string).concat(String(t.tag.name)).replace(/\s/g,'');
+    let string = String(t.token).concat(String(t.label)).replace(/\s/g,'');
     return string === this.textContent
   });
   if(index !== -1){
@@ -74,14 +74,15 @@ function removeAllHighlights() {
   });
 }
 
-function highlightAlredyInsert(tags) {
+function highlightAlredyInsert(tags, availTag) {
   tags.forEach(t => {
-    const startNode = document.getElementById(t.startId);
-    const endNode = document.getElementById(t.endId);
+    const tag = availTag.find(item => {return item.name === t.label});
+    const startNode = document.getElementById(t.start);
+    const endNode = document.getElementById(t.end);
     let range = document.createRange()
     range.setStartBefore(startNode);
     range.setEndAfter(endNode);
-    highlightRange(range, t.tag)
+    highlightRange(range, tag)
   });
 }
 

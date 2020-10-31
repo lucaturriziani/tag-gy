@@ -7,8 +7,8 @@ import { App } from '../App'
 import { Header } from '../Header/Header';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { get, put } from '../../service/pos.service';
-
-window.$currentTag = []
+import { getAllPOSTag } from '../../service/tag.service';
+import { colorRandom } from '../../utils/color';
 
 export class ContainerPosTagging extends Component {
 
@@ -16,30 +16,49 @@ export class ContainerPosTagging extends Component {
         super(props);
 
         this.state = {
-            //sentences: ["Everyone knows all about my transgressions still in my heart somewhere, there's melody and harmony for you and me, tonight", "And maybe that's the price you pay for the money and fame at an early age", "But the way that we love in the night gave me life baby, I can't explain", "And now it's clear as this promise that we're making two reflections into one 'cause it's like you're my mirror"],
             sentences: null,
             selectedTag: null,
-            downloaded: false
+            downloaded: false,
+            availTag: []
         }
 
-        // list of possible tag
-        this.tagg = [];
         this.onTagSelected = this.onTagSelected.bind(this);
     }
 
     componentDidMount() {
-        get().then(res => {
-            const phrases = res.data;
-            this.setState({ sentences: phrases });
-            this.setState({ downloaded: true });
-            this.highlight();
+        getAllPOSTag().then(res => {
+            console.log("response tags", res.data)
+            let distTag = res.data;
+            distTag = distTag.map(item => {
+                let tag = {
+                    name: item,
+                    color: colorRandom()
+                }
+                return tag;
+            });
+            this.setState({ availTag: distTag }, () => {
+                get().then(res => {
+                    const phrases = res.data;
+                    if (phrases.length) {
+                        console.log("response", res.data);
+                        window.$currentTag = phrases[0].spans
+                        this.setState({ sentences: phrases });
+                        this.setState({ downloaded: true });
+                        highlightAlredyInsert(this.state.sentences[this.props.count].spans, this.state.availTag);
+                    }
+                })
+            });
+        }).catch(err => {
+            console.log("error while retriving available tags", err);
+            App.visualizeToast("error", "Error", "Error while retriving available tags");
         })
     }
 
     acceptSentences = () => {
         if (this.props.count < this.state.sentences.length) {
+            console.log(this.state.sentences[this.props.count]);
             put(this.state.sentences[this.props.count]).then(res => {
-                this.nextSententes()
+                this.nextSententes();
                 this.props.accept(100 / this.state.sentences.length);
             }).catch(err => {
                 console.log("update", err)
@@ -69,9 +88,11 @@ export class ContainerPosTagging extends Component {
     }
 
     highlight() {
-        if (this.state.sentences[this.props.count].spans) {
-            window.$currentTag = this.state.sentences[this.props.count].spans
-            highlightAlredyInsert(this.state.sentences[this.props.count].spans)
+        if (this.state.sentences[this.props.count] !== undefined) {
+            if (this.state.sentences[this.props.count].spans) {
+                window.$currentTag = this.state.sentences[this.props.count].spans
+                highlightAlredyInsert(this.state.sentences[this.props.count].spans, this.state.availTag)
+            }
         }
     }
 
@@ -80,7 +101,7 @@ export class ContainerPosTagging extends Component {
             if (this.state.selectedTag !== null) {
                 document.getElementById('tag-' + this.state.selectedTag.name).removeAttribute('style');
             }
-            document.getElementById('tag-' + tag.name).setAttribute('style', 'background-color: '+tag.color);
+            document.getElementById('tag-' + tag.name).setAttribute('style', 'background-color: ' + tag.color);
             this.setState({ selectedTag: tag });
         }
     }
@@ -102,10 +123,10 @@ export class ContainerPosTagging extends Component {
             let [startId, endId, stringSelected] = highlightSelection(this.state.selectedTag);
             if (startId !== null && endId !== null && stringSelected !== null) {
                 window.$currentTag.push({
-                    startId: startId,
-                    endId: endId,
-                    string: stringSelected,
-                    tag: this.state.selectedTag
+                    start: startId,
+                    end: endId,
+                    token: stringSelected,
+                    label: this.state.selectedTag.name
                 });
             }
         };
@@ -133,8 +154,8 @@ export class ContainerPosTagging extends Component {
                 {this.state.downloaded ?
                     this.state.sentences.length > 0 ?
                         this.state.sentences[this.props.count] !== undefined ?
-                            <Card className="ui-card-shadow wrapper c0003" header={<Header onTagSelected={this.onTagSelected} tagg={this.tagg}></Header>}>
-                                <div onMouseUp={onMouseUp}>{divideText(this.state.sentences[this.props.count]).map((item, index) => {
+                            <Card className="ui-card-shadow wrapper c0003" header={<Header onTagSelected={this.onTagSelected} availTag={this.state.availTag}></Header>}>
+                                <div onMouseUp={onMouseUp}>{divideText(this.state.sentences[this.props.count].text).map((item, index) => {
                                     return <span className='c0002' id={index} key={index}>{item}</span>
                                 })}
                                 </div>

@@ -4,6 +4,9 @@ import { ContainerPosTagging } from './Wrapper/ContainerPosTagging';
 import PrimeReact from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 
+// GLOBAL 
+window.$currentTag = []
+
 export class App extends Component {
 
   constructor(props) {
@@ -18,7 +21,7 @@ export class App extends Component {
       accepted: 0,
       ignored: 0,
       count: 0,
-      lastInput: []
+      lastInput: [],
     }
   }
 

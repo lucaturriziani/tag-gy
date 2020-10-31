@@ -7,6 +7,5 @@ const db = {};
 db.mongoose = mongoose;
 db.url = dbConfig.url;
 db.sentences = require("./sentences.model.js")(mongoose);
-db.tags = require("./tag.model.js")(mongoose);
 
 module.exports = db;
