@@ -50,7 +50,7 @@ export class ContainerPosTagging extends Component {
             });
         }).catch(err => {
             console.log("error while retriving available tags", err);
-            App.visualizeToast("error", "Error", "Error while retriving available tags");
+            App.visualizeToast("error", "Error", err.toString());
         })
     }
 
