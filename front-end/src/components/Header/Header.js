@@ -83,7 +83,7 @@ export class Header extends Component {
         return (
             <>
                 <div className="p-grid">
-                    <div className="p-col-fixed p-ml-sm-3 p-ml-xl-4 p-mt-2">
+                    {this.props.varTags ? <div className="p-col-fixed p-ml-sm-3 p-ml-xl-4 p-mt-2">
                         <div className="box add-button p-mt-3 p-mr-2 p-ml-2 p-pl-4 p-pr-4" onClick={() => this.onClick()}><i className="pi pi-plus" /></div>
                         <Dialog header="Tag module" visible={this.state.displayModal} maximizable modal style={{ width: '50vw' }} footer={this.renderFooter()} onHide={() => this.onHide()}>
                             <div className="p-field">
@@ -95,8 +95,8 @@ export class Header extends Component {
                                 {this.state.error2 ? <small id="newTag-help" className="p-invalid p-d-block">The name tag to add is alredy used.</small> : null}
                             </div>
                         </Dialog>
-                    </div>
-                    <div className="p-col-7 p-sm-8 p-xl-9 p-mt-2">
+                    </div> : null}
+                    <div className={this.props.varTags ? "p-col-7 p-sm-8 p-xl-9 p-mt-2" : "p-mt-3 p-ml-2 p-pl-3"}>
                         <ScrollPanel style={{ width: '100%', height: '100%' }} className="tag-bar">
                             <div className="p-d-flex p-mr-5">
                                 {this.props.availTag ? this.props.availTag.map((tag, index) => {

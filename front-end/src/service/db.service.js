@@ -5,4 +5,8 @@ function getAllPOSTag(){
     return Axios.get(urlMongo+"/tags");
 }
 
-export {getAllPOSTag};
+function getCollsName(){
+    return Axios.get(urlMongo+"/collections");
+}
+
+export {getAllPOSTag, getCollsName};

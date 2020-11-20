@@ -36,7 +36,6 @@ exports.findAll = (req, res) => {
 exports.getAllTag = (req, res) => {
   pieceOfSpeech.find().distinct("spans.label")
     .then(data => {
-      console.log(data);
       res.send(data);
     })
     .catch(err => {

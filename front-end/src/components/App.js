@@ -22,6 +22,7 @@ export class App extends Component {
       ignored: 0,
       count: 0,
       lastInput: [],
+      variableTags: true
     }
   }
 
@@ -66,14 +67,19 @@ export class App extends Component {
     })
   }
 
+  onChangeVariableTags= (e) => {
+    console.log(e);
+    this.setState({variableTags: e.checked});
+  }
+
   render() {
     return (
       <>
         <Toast className="t" ref={(el) => window.$toast = el} position="bottom-left" />
-        <SidebarMenu total={this.state.total} accept={this.state.accepted} ignore={this.state.ignored}></SidebarMenu>
+        <SidebarMenu total={this.state.total} accept={this.state.accepted} ignore={this.state.ignored} checked={this.state.variableTags} onChecked={this.onChangeVariableTags}></SidebarMenu>
         <div className="p-grid p-mt-3 p-mt-md-6 p-mb-6 p-mr-0 p-ml-0">
           <div className="p-col-10 p-offset-1 p-md-8 p-lg-6 p-md-offset-2 p-lg-offset-3 ">
-            <ContainerPosTagging ref={this.containerText} count={this.state.count} accept={this.acceptSentences} ignore={this.ignoreSentences} back={this.previousSentences}></ContainerPosTagging>
+            <ContainerPosTagging ref={this.containerText} count={this.state.count} accept={this.acceptSentences} ignore={this.ignoreSentences} back={this.previousSentences} varTags={this.state.variableTags}></ContainerPosTagging>
           </div>
         </div>
       </>

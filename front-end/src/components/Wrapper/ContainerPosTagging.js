@@ -7,7 +7,7 @@ import { App } from '../App'
 import { Header } from '../Header/Header';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { get, put } from '../../service/pos.service';
-import { getAllPOSTag } from '../../service/tag.service';
+import { getAllPOSTag } from '../../service/db.service';
 import { colorRandom } from '../../utils/color';
 
 export class ContainerPosTagging extends Component {
@@ -154,7 +154,7 @@ export class ContainerPosTagging extends Component {
                 {this.state.downloaded ?
                     this.state.sentences.length > 0 ?
                         this.state.sentences[this.props.count] !== undefined ?
-                            <Card className="ui-card-shadow wrapper c0003" header={<Header onTagSelected={this.onTagSelected} availTag={this.state.availTag}></Header>}>
+                            <Card className="ui-card-shadow wrapper c0003" header={<Header varTags={this.props.varTags} onTagSelected={this.onTagSelected} availTag={this.state.availTag}></Header>}>
                                 <div onMouseUp={onMouseUp}>{divideText(this.state.sentences[this.props.count].text).map((item, index) => {
                                     return <span className='c0002' id={index} key={index}>{item}</span>
                                 })}
