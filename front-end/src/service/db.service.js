@@ -1,12 +1,12 @@
 import Axios from 'axios';
 import {urlMongo} from '../environments/environment';
 
-function getAllPOSTag(){
-    return Axios.get(urlMongo+"/tags");
+function getAllTag(dbName){
+    return Axios.get(urlMongo+dbName+"/tags");
 }
 
 function getCollsName(){
     return Axios.get(urlMongo+"/collections");
 }
 
-export {getAllPOSTag, getCollsName};
+export {getAllTag, getCollsName};

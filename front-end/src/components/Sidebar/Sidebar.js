@@ -26,7 +26,6 @@ export class SidebarMenu extends Component {
         getCollsName().then(res => {
             console.log("response collections", res.data)
             this.setState({ collectionz: res.data });
-            console.log(this.state.collectionz)
         });
     }
 
@@ -44,7 +43,7 @@ export class SidebarMenu extends Component {
                     <h1>tag-gy</h1>
                     <Line></Line>
                     <h4>COLLECTIONS</h4>
-                    <Dropdown value={this.state.collectionz[0]} options={this.state.collectionz} optionLabel="name" placeholder="Select a collections" style={{width:"100%"}}/>
+                    <Dropdown value={this.props.selectedCollz} options={this.state.collectionz} onChange={(e) => {this.props.onSelCollz(e)}} optionLabel="name" placeholder="Select a collections" style={{width:"100%"}}/>
                     <div className="p-field-checkbox p-mt-2">
                         <Checkbox inputId="binary" checked={this.props.checked} onChange={e => this.props.onChecked(e)} />
                         <label htmlFor="binary">{this.props.checked ? 'VARIABLE TAGS' : 'FIXED TAGS'}</label>

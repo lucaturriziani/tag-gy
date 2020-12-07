@@ -7,7 +7,7 @@ import { App } from '../App'
 import { Header } from '../Header/Header';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { get, put } from '../../service/pos.service';
-import { getAllPOSTag } from '../../service/db.service';
+import { getAllTag } from '../../service/db.service';
 import { colorRandom } from '../../utils/color';
 
 export class ContainerPosTagging extends Component {
@@ -26,7 +26,8 @@ export class ContainerPosTagging extends Component {
     }
 
     componentDidMount() {
-        getAllPOSTag().then(res => {
+        window.$currentTag = [];
+        getAllTag("").then(res => {
             console.log("response tags", res.data)
             let distTag = res.data;
             distTag = distTag.map(item => {

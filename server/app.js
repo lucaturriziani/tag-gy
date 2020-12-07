@@ -28,6 +28,7 @@ db.mongoose
   });
 
 const POS = require("./controllers/sentences.controller.js");
+const img = require("./controllers/image.controller.js");
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
@@ -36,14 +37,20 @@ app.listen(port, () => {
 
 // MongoDB
 app.get('/', POS.findAll)
+app.get('/img', img.findAll)
+app.get('/img/file/:id',img.getImage)
 
 app.put('/', POS.update)
+app.put('/img', img.update)
 
 app.delete('/reset', POS.deleteAll)
+app.delete('/img', img.deleteAll)
 
 app.post('/init', POS.create)
+app.post('/img/init', img.create)
 
 app.get('/tags', POS.getAllTag)
+app.get('/img/tags', img.getAllTag)
 
 app.get('/collections', (req, res) => {
   let colls = [];

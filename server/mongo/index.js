@@ -7,5 +7,6 @@ const db = {};
 db.mongoose = mongoose;
 db.url = dbConfig.url;
 db.sentences = require("./sentences.model.js")(mongoose);
+db.image = require("./image.model.js")(mongoose);
 
 module.exports = db;

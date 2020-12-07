@@ -4,13 +4,12 @@ import { ScrollPanel } from 'primereact/scrollpanel';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { colorRandom } from '../../utils/color';
+import { brightColorRandom, colorRandom } from '../../utils/color';
 
 export class Header extends Component {
 
     constructor(props) {
         super(props);
-        console.log(props)
 
         this.state = {
             displayModal: false,
@@ -60,13 +59,21 @@ export class Header extends Component {
         }
         const index = this.props.availTag.findIndex(t => { return t.name.toUpperCase() === this.state.value.toUpperCase() });
         if (index === -1) {
-            this.props.availTag.push({ name: this.state.value.toUpperCase(), color: colorRandom(), count: 0 });
+            let c = this.colorTag();
+            this.props.availTag.push({ name: this.state.value.toUpperCase(), color: c, count: 0 });
             this.setState({ value: '' });
             this.onHide();
             return;
         }
 
         this.setState({ error2: true });
+    }
+
+    colorTag(){
+        let color;
+        if(this.props.collz === "images") color = brightColorRandom();
+        else color = colorRandom();
+        return color;
     }
 
     renderFooter() {

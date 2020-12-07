@@ -1,0 +1,17 @@
+.cnvs-container{
+    text-align: center;
+}
+#cnvs{
+    width:100%
+}
+.p-card .p-card-body{
+    padding: 0;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 1rem;
+}
+
+.p-card .p-card-content{
+    padding: 0;
+
+}

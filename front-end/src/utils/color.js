@@ -1,20 +1,33 @@
-import {randomColor} from 'randomcolor';
+import { randomColor } from 'randomcolor';
 
-const color = randomColor({
+const randColor = randomColor({
     luminosity: 'random', // dark, light, bright or random
     format: 'rgb',
     count: 20
- });
+});
 
- let count = -1;
+const brightColor = randomColor({
+    luminosity: 'light', // dark, light, bright or random
+    format: 'rgb',
+    count: 20
+});
+
+let count = -1;
 
 function colorRandom() {
-    console.log("color", color)
     count++;
-    if(count === 20){
+    if (count === 20) {
         count = -1
     }
-    return color[count];
+    return randColor[count];
 };
 
-export {colorRandom};
+function brightColorRandom() {
+    count++;
+    if (count === 20) {
+        count = -1
+    }
+    return brightColor[count];
+};
+
+export { colorRandom, brightColorRandom };

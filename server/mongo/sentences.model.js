@@ -17,6 +17,5 @@ module.exports = mongoose => {
       )
     );
 
-  
     return POS;
   };
