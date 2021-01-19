@@ -6,10 +6,10 @@ import { get, put } from "../../service/img.service";
 import { brightColorRandom } from "../../utils/color";
 import { deleteAll, deleteSelected, init2, loadImage } from "../../utils/imageUtils";
 import { App } from "../App";
-import { AcceptTag } from "../Footer/Footer";
-import { Header } from "../Header/Header";
+import { GroupButtonsFooter } from "./Footer/GroupButtonsFooter.component";
+import { TagVisualizer } from "./Header/TagVisualizer.component";
 import { Button } from 'primereact/button';
-import './ContainerImgTagging.css';
+import './ContainerImgTagging.style.css';
 
 // For imageUtils
 window.$selectedTag = null;
@@ -133,7 +133,7 @@ export class ContainerImgTagging extends Component {
                 {this.state.downloaded ?
                     this.state.images.length > 0 ?
                         this.state.images[this.props.count] !== undefined ?
-                            <Card className="ui-card-shadow wrapper c0003" header={<Header varTags={this.props.varTags} onTagSelected={this.onTagSelected} availTag={this.state.availTag} collz={"images"}></Header>}>
+                            <Card className="ui-card-shadow wrapper c0003" header={<TagVisualizer varTags={this.props.varTags} onTagSelected={this.onTagSelected} availTag={this.state.availTag} collz={"images"}></TagVisualizer>}>
                                 <div className="p-d-flex p-flex-row-reverse p-mb-2">
                                     <Button icon="pi pi-refresh" className="p-button-outlined p-ml-2" onClick={this.startDeleteAll} />
                                     <Button icon="pi pi-trash" className="p-button-outlined p-ml-2" onClick={this.startDelete} />
@@ -150,7 +150,7 @@ export class ContainerImgTagging extends Component {
                     <div className="p-mt-6 p-ai-center">
                         <ProgressSpinner style={{ width: '50px', height: '50px', display: 'block' }} strokeWidth="8" animationDuration=".5s" />
                     </div>}
-                <AcceptTag back={this.previousSentences} accept={this.acceptSentences} ignore={this.ignoreSentences} disabled={this.state.downloaded}></AcceptTag>
+                <GroupButtonsFooter back={this.previousSentences} accept={this.acceptSentences} ignore={this.ignoreSentences} disabled={this.state.downloaded}></GroupButtonsFooter>
             </>
         )
     }

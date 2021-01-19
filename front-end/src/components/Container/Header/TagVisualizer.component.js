@@ -1,12 +1,12 @@
-import './Header.css';
+import './TagVisualizer.style.css';
 import React, { Component } from 'react';
 import { ScrollPanel } from 'primereact/scrollpanel';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { brightColorRandom, colorRandom } from '../../utils/color';
+import { brightColorRandom, colorRandom } from '../../../utils/color';
 
-export class Header extends Component {
+export class TagVisualizer extends Component {
 
     constructor(props) {
         super(props);

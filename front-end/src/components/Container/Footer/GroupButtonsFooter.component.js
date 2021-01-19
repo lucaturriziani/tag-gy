@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Button } from 'primereact/button';
 import { Ripple } from 'primereact/ripple';
-import './Footer.css';
+import './GroupButtonsFooter.style.css';
 
-export class AcceptTag extends Component {
+export class GroupButtonsFooter extends Component {
     render() {
         return (
             <>

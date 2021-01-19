@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Card } from 'primereact/card';
 import { highlightSelection, removeAllHighlights, highlightAlredyInsert } from '../../utils/highlight';
-import './ContainerPosTagging.css'
-import { AcceptTag } from '../Footer/Footer';
+import './ContainerPosTagging.style.css'
+import { GroupButtonsFooter } from './Footer/GroupButtonsFooter.component';
 import { App } from '../App'
-import { Header } from '../Header/Header';
+import { TagVisualizer } from "./Header/TagVisualizer.component";
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { get, put } from '../../service/pos.service';
 import { getAllTag } from '../../service/db.service';
@@ -155,7 +155,7 @@ export class ContainerPosTagging extends Component {
                 {this.state.downloaded ?
                     this.state.sentences.length > 0 ?
                         this.state.sentences[this.props.count] !== undefined ?
-                            <Card className="ui-card-shadow wrapper c0003" header={<Header varTags={this.props.varTags} onTagSelected={this.onTagSelected} availTag={this.state.availTag}></Header>}>
+                            <Card className="ui-card-shadow wrapper c0003" header={<TagVisualizer varTags={this.props.varTags} onTagSelected={this.onTagSelected} availTag={this.state.availTag}></TagVisualizer>}>
                                 <div onMouseUp={onMouseUp}>{divideText(this.state.sentences[this.props.count].text).map((item, index) => {
                                     return <span className='c0002' id={index} key={index}>{item}</span>
                                 })}
@@ -169,7 +169,7 @@ export class ContainerPosTagging extends Component {
                     <div className="p-mt-6 p-ai-center">
                         <ProgressSpinner style={{ width: '50px', height: '50px', display: 'block' }} strokeWidth="8" animationDuration=".5s" />
                     </div>}
-                <AcceptTag back={this.previousSentences} accept={this.acceptSentences} ignore={this.ignoreSentences} disabled={this.state.downloaded}></AcceptTag>
+                <GroupButtonsFooter back={this.previousSentences} accept={this.acceptSentences} ignore={this.ignoreSentences} disabled={this.state.downloaded}></GroupButtonsFooter>
             </>
         )
     }

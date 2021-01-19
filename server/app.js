@@ -29,6 +29,8 @@ db.mongoose
 
 const POS = require("./controllers/sentences.controller.js");
 const img = require("./controllers/image.controller.js");
+const usr = require("./controllers/user.controller.js");
+const jwt = require("./jwt/jwt.middleware.js");
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
@@ -48,10 +50,13 @@ app.delete('/img', img.deleteAll)
 
 app.post('/init', POS.create)
 app.post('/img/init', img.create)
+app.post('/login', usr.login)
+app.post('/register', jwt.verifyToken, usr.register)
 
 app.get('/tags', POS.getAllTag)
 app.get('/img/tags', img.getAllTag)
 
+// da eliminare
 app.get('/collections', (req, res) => {
   let colls = [];
   db.mongoose.connection.db.listCollections().toArray(function (err, collectionz) {
