@@ -467,7 +467,9 @@ function deleteSelected() {
 }
 
 function deleteAll() {
-  boxes = [];
+  console.log(window.$currentTag);
+  boxes = window.$currentTag = [];
+  console.log(window.$currentTag);
   invalidate();
 }
 

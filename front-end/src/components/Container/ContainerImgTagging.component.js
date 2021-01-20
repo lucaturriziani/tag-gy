@@ -63,6 +63,7 @@ export class ContainerImgTagging extends Component {
     acceptSentences = () => {
         if (this.props.count < this.state.images.length) {
             let list = this.state.images;
+            console.log(window.$currentTag);
             list[this.props.count].spans = window.$currentTag;
             this.setState({ images: list });
             put(this.state.images[this.props.count]).then(res => {

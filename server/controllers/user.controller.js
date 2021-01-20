@@ -34,7 +34,8 @@ exports.register = (req, res) => {
         user.create({
             username: req.body.username,
             role: req.body.role,
-            password: hashedPassword
+            password: hashedPassword,
+            tagCount: 0
         },
             function (err, user) {
                 if (err) return res.status(500).send("There was a problem registering the user`.");
