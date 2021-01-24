@@ -25,7 +25,8 @@ exports.login = (req, res) => {
 }
 
 exports.register = (req, res) => {
-    if (req.userRole !== 'A') return res.status(401).send("Not permitted!");
+    // Scommentare se si vuole consentire solo agli admin ddi inserire nuovi utenti
+    //if (req.userRole !== 'A') return res.status(401).send("Not permitted!");
     user.countDocuments({ username: req.body.username }, function (err, cnt) {
         if (cnt > 0) return res.status(500).send("User already registered.");
 
@@ -33,7 +34,7 @@ exports.register = (req, res) => {
 
         user.create({
             username: req.body.username,
-            role: req.body.role,
+            role: req.body.role, // A = admin, O = operatore
             password: hashedPassword,
             tagCount: 0
         },

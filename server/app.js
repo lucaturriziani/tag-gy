@@ -51,7 +51,7 @@ app.delete('/img', img.deleteAll)
 app.post('/init', POS.create)
 app.post('/img/init', img.create)
 app.post('/login', usr.login)
-app.post('/register', jwt.verifyToken, usr.register)
+app.post('/register', /*jwt.verifyToken,*/ usr.register)
 
 app.get('/tags', POS.getAllTag)
 app.get('/img/tags', img.getAllTag)
