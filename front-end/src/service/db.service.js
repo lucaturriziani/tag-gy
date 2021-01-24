@@ -5,8 +5,8 @@ function getAllTag(dbName){
     return Axios.get(urlMongo+dbName+"/tags");
 }
 
-function getCollsName(){
-    return Axios.get(urlMongo+"/collections");
+function getTagCount(){
+    return Axios.get(urlMongo+"/user/info");
 }
 
-export {getAllTag, getCollsName};
+export {getAllTag, getTagCount};

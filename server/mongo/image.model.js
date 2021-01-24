@@ -10,7 +10,26 @@ module.exports = mongoose => {
                   x: Number,
                   y: Number,
                   w: Number,
-                  h: Number
+                  h: Number,
+                  coords:
+                    {
+                      bl: {
+                        x: Number,
+                        y: Number
+                      },
+                      br: {
+                        x: Number,
+                        y: Number
+                      },
+                      tl: {
+                        x: Number,
+                        y: Number
+                      },
+                      tr: {
+                        x: Number,
+                        y: Number
+                      }
+                    }
               }
           ]
         },

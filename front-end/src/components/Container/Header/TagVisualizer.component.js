@@ -24,6 +24,11 @@ export class TagVisualizer extends Component {
         this.addTag = this.addTag.bind(this);
     }
 
+    componentDidMount(){
+        // scommentare per avere sempre il primo tag selezionato all'avvio
+        this.props.onTagSelected(this.props.availTag[0])
+    }
+
     onClick(position) {
         let state = {
             displayModal: true

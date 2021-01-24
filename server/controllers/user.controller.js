@@ -20,7 +20,7 @@ exports.login = (req, res) => {
         });
 
         // return the information including token as JSON
-        res.status(200).send({ auth: true, token: token });
+        res.status(200).send({ auth: true, tagCount: usr.tagCount, username: usr.username, token: token });
     });
 }
 
@@ -44,4 +44,10 @@ exports.register = (req, res) => {
             });
     })
 
+}
+
+exports.tagCount = (req, res) => {
+    user.findById(req.userId).then(usr => {
+        res.status(200).send({tagCount: usr.tagCount})
+    })
 }

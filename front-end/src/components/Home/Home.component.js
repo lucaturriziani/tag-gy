@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { SidebarMenu } from '../Sidebar/Sidebar';
 import { ContainerPosTagging } from '../Container/ContainerPosTagging.component';
-import { ContainerImgTagging } from '../Container/ContainerImgTagging.component';
-import { getRefCnvs } from '../../utils/imageUtils';
+import { CanvasFabric } from '../Container/Canvas.component';
 
 export class Home extends Component {
 
@@ -65,7 +64,6 @@ export class Home extends Component {
       if (this.state.selectedCollz.name === "sentences")
         this.containerText.current.highlight();
       if (this.state.selectedCollz.name === "images") {
-        getRefCnvs();
         this.containerImg.current.previous();
       }
     })
@@ -92,10 +90,9 @@ export class Home extends Component {
               <ContainerPosTagging ref={this.containerText}
                 count={this.state.count} accept={this.acceptSentences} ignore={this.ignoreSentences} back={this.previousSentences}
                 varTags={this.state.variableTags}></ContainerPosTagging>
-              :
-              <ContainerImgTagging ref={this.containerImg}
+              : <CanvasFabric ref={this.containerImg}
                 count={this.state.count} accept={this.acceptSentences} ignore={this.ignoreSentences} back={this.previousSentences}
-                varTags={this.state.variableTags}></ContainerImgTagging>
+                varTags={this.state.variableTags}></CanvasFabric>
             }
           </div>
         </div>

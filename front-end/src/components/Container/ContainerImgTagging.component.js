@@ -104,6 +104,7 @@ export class ContainerImgTagging extends Component {
     }
 
     onTagSelected = (tag) => {
+        if (tag === null || tag === undefined) return;
         if (tag !== this.state.selectedTag) {
             if (this.state.selectedTag !== null) {
                 document.getElementById('tag-' + this.state.selectedTag.name).removeAttribute('style');

@@ -51,3 +51,11 @@ h4{
 .menu-option{
     font-weight: bold;
 }
+
+.username{
+    display: block;
+    margin-block-end: 1.15em;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+    

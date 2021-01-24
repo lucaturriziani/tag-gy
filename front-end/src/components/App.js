@@ -5,11 +5,18 @@ import { Toast } from 'primereact/toast';
 import { Home } from './Home/Home.component';
 import { Login } from './Login/Login.component';
 import { BrowserRouter as Router, Switch, Route, Redirect, Link } from "react-router-dom";
+import axios from 'axios';
 
 // GLOBAL 
 window.$currentTag = []
 
 export class App extends Component {
+
+  componentDidMount() {
+    let auth = JSON.parse(sessionStorage.getItem("token"));
+    if (auth === null || auth === undefined) return;
+    axios.defaults.headers.common['x-access-token'] = auth.token;
+  }
 
   static visualizeToast(type, summary, message) {
     window.$toast.show({ severity: type, summary: summary, detail: message, life: 3000 });
@@ -59,7 +66,7 @@ function NoMatch() {
     <>
       <div className="p-grid p-mt-3 p-mt-md-6 p-mb-6 p-mr-0 p-ml-0">
         <div className="p-col-10 p-offset-1 p-md-8 p-lg-6 p-md-offset-2 p-lg-offset-3 ">
-          <Card className="ui-card-shadow">
+          <Card className="ui-card-shadow wrapper">
             <div className="p-grid">
               <div className="p-col-6 p-offset-3 p-d-flex p-jc-center">
                 <i className="pi pi-exclamation-triangle" style={{ fontSize: "10rem" }}></i>

@@ -7,6 +7,7 @@ import './Login.style.css';
 import { Redirect } from "react-router";
 import { login } from '../../service/auth.service';
 import { App } from "../App";
+import axios from "axios";
 
 export class Login extends Component {
 
@@ -24,11 +25,12 @@ export class Login extends Component {
         this.setState({token: sessionStorage.getItem("token")});
     }
 
-    handleSubmit(value) {
+    handleSubmit() {
+        console.log(this.state.usr, this.state.pwd)
         login(this.state.usr, this.state.pwd).then(res => {
-            console.log("Auth",res.data.token);
             const jwt = res.data.token;
-            sessionStorage.setItem("token", jwt)
+            sessionStorage.setItem("token", JSON.stringify(res.data));
+            axios.defaults.headers.put['x-access-token'] = jwt;
             this.setState({token: jwt});
         }).catch(err => {
             App.visualizeToast("error", "Error", err.toString());
@@ -56,15 +58,19 @@ export class Login extends Component {
                 { !this.state.token ?
                     <div className="p-grid p-mt-3 p-mt-md-6 p-mb-6 p-mr-0 p-ml-0">
                         <div className="p-col-10 p-offset-1 p-md-8 p-lg-6 p-md-offset-2 p-lg-offset-3 ">
-                            <Card className="ui-card-shadow" header={logo}>
+                            <Card className="ui-card-shadow wrapper" header={logo}>
                                     <div className="p-grid">
                                         <div className="p-col-6">
                                             <span className="p-input-icon-left maxWdt">
                                                 <i className="pi pi-user"></i>
                                                 <InputText className="maxWdt" value={this.state.usr} onChange={(e) => this.setUser(e.target.value)} placeholder="Username" />
-                                            </span></div>
+                                            </span>
+                                        </div>
                                         <div className="p-col-6">
-                                            <Password className="maxWdt" value={this.state.pwd} onChange={(e) => this.setPwd(e.target.value)} />
+                                        <span className="p-input-icon-left maxWdt">
+                                        <i className="pi pi-key"></i>
+                                            <Password className="maxWdt" value={this.state.pwd} feedback={false} onChange={(e) => this.setPwd(e.target.value)} />
+                                        </span>
                                         </div>
                                     </div>
                                     <div className="p-col-6 p-md-offset-3 p-pb-6 p-pt-4">

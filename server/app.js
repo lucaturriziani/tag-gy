@@ -42,8 +42,8 @@ app.get('/', POS.findAll)
 app.get('/img', img.findAll)
 app.get('/img/file/:id',img.getImage)
 
-app.put('/', POS.update)
-app.put('/img', img.update)
+app.put('/', jwt.verifyToken, POS.update)
+app.put('/img', jwt.verifyToken, img.update)
 
 app.delete('/reset', POS.deleteAll)
 app.delete('/img', img.deleteAll)
@@ -55,17 +55,5 @@ app.post('/register', jwt.verifyToken, usr.register)
 
 app.get('/tags', POS.getAllTag)
 app.get('/img/tags', img.getAllTag)
-
-// da eliminare
-app.get('/collections', (req, res) => {
-  let colls = [];
-  db.mongoose.connection.db.listCollections().toArray(function (err, collectionz) {
-    collectionz.forEach(item=>{
-      colls.push({
-        name: item.name,
-        code: item.name
-      })
-    })
-    res.status(200).send(colls);
-  });
-})
+app.get('/img/tags/count', img.getTagAndCount)
+app.get('/user/info', jwt.verifyToken, usr.tagCount)

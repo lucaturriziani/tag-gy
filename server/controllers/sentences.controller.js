@@ -1,5 +1,6 @@
 const db = require("../mongo");
 const pieceOfSpeech = db.sentences;
+const user = db.user;
 const fs = require("fs");
 
 exports.create = (req, res) => {
@@ -47,6 +48,9 @@ exports.getAllTag = (req, res) => {
 }
 
 exports.update = (req, res) => {
+  user.findById(req.userId).then( usr => 
+    user.updateOne({_id: req.userId}, {tagCount: usr.tagCount + 1})
+  )
   pieceOfSpeech.findByIdAndUpdate(req.body._id, req.body, { useFindAndModify: false })
     .then(data => {
       if (!data) {
