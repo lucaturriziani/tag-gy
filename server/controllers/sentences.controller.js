@@ -80,3 +80,29 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
+
+exports.getTagAndCount = (req, res) => {
+  pieceOfSpeech.aggregate([
+    { "$unwind": "$spans" },
+    { "$group": { "_id": "$spans.label", "count": { "$sum": 1 } } },
+    {
+      "$group": {
+        "_id": null, "tags": {
+          "$push": {
+            "tag": "$_id",
+            "count": "$count"
+          }
+        }
+      }
+    }
+  ])
+    .then(data => {
+      res.send(data[0].tags);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving."
+      });
+    })
+}

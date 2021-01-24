@@ -10,6 +10,7 @@ export class Home extends Component {
 
     this.containerText = React.createRef();
     this.containerImg = React.createRef();
+    this.sideBarMenu = React.createRef();
 
     this.state = {
       total: 0,
@@ -58,7 +59,6 @@ export class Home extends Component {
       }
       default: break;
     }
-
     this.setState({ total: this.state.total - decrement });
     this.setState({ count: this.state.count - 1 }, () => {
       if (this.state.selectedCollz.name === "sentences")
@@ -74,14 +74,14 @@ export class Home extends Component {
   }
 
   onSelCollz = (e) => {
-    this.setState({ selectedCollz: e.value });
+    this.setState({ selectedCollz: e.value }, () => this.sideBarMenu.current.getCountOfTag());
     this.setState({ count: 0 });
   }
 
   render() {
     return (
       <>
-        <SidebarMenu total={this.state.total} accept={this.state.accepted} ignore={this.state.ignored}
+        <SidebarMenu ref={this.sideBarMenu} total={this.state.total} accept={this.state.accepted} ignore={this.state.ignored}
           checked={this.state.variableTags} onChecked={this.onChangeVariableTags}
           selectedCollz={this.state.selectedCollz} onSelCollz={this.onSelCollz}></SidebarMenu>
         <div className="p-grid p-mt-3 p-mt-md-6 p-mb-6 p-mr-0 p-ml-0">

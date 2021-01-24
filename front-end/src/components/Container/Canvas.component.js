@@ -12,8 +12,6 @@ import './ContainerImgTagging.style.css';
 import { fabric } from 'fabric';
 import { urlMongo } from "../../environments/environment";
 
-// For imageUtils
-window.$selectedTag = null;
 const offsetTag = 0;
 export class CanvasFabric extends Component {
 
@@ -35,6 +33,13 @@ export class CanvasFabric extends Component {
         this.canvasHgt = null;
     }
 
+    /**
+     * Quando il componente viene caricato la prima volta vengono effettuate le seguenti operazioni:
+     * - recupero dei tag presenti nel db a cui ad ognuno di essi viene assegnato un colore;
+     * - recupero delle immagini e dei tag creati su di essa;
+     * - caricamento del canvas con la prima immagine e visualizzazione dei tag presenti per qull'immagine;
+     * @see loadCanvas
+     */
     componentDidMount() {
         window.$currentTag = []
 
@@ -55,23 +60,7 @@ export class CanvasFabric extends Component {
                         console.log("response", res.data);
                         this.setState({ images: imgs });
                         this.setState({ downloaded: true }, () => {
-                            // dimensioni del canvas
-                            this.canvasWdt = document.getElementById('cnvs-container').clientWidth
-                            this.canvasHgt = this.canvasWdt * 70 / 100;
-                            this.canvas = new fabric.Canvas('c', {
-                                selection: false,
-                                width: this.canvasWdt,
-                                height: this.canvasHgt,
-                            });
-
-                            // mouse event handler
-                            this.canvas.on({
-                                'mouse:down': (e) => this.mouseDown(e),
-                                'mouse:move': (e) => this.mouseMove(e),
-                                'mouse:up': (e) => this.mouseUp(e)
-                            });
-
-                            this.loadImg(this.canvasWdt, this.canvasHgt)
+                            this.loadCanvas();
 
                             fabric.Object.prototype.transparentCorners = false;
                             fabric.Object.prototype.hasBorders = false;
@@ -86,6 +75,47 @@ export class CanvasFabric extends Component {
         })
     }
 
+    /**
+     * Funzione per la creazione dell'oggetto Canvas della libreria fabric.js
+     * Il canvas prenderà le dimensioni a seconda delle dimensioni del container nello schermo dell'utente
+     * Verranno impostate anche le funzioni di handler per gli eventi del mouse
+     * @see mouseDown
+     * @see mouseMove
+     * @see mouseUp
+     * Infine verrà caricata l'immagine corrente con i relativi tag
+     * @see loadImg
+     */
+    loadCanvas(){
+        // dimensioni del canvas
+        this.canvasWdt = document.getElementById('cnvs-container').clientWidth
+        this.canvasHgt = this.canvasWdt * 70 / 100;
+        this.canvas = new fabric.Canvas('c', {
+            selection: false,
+            width: this.canvasWdt,
+            height: this.canvasHgt,
+        });
+
+        // mouse event handler
+        this.canvas.on({
+            'mouse:down': (e) => this.mouseDown(e),
+            'mouse:move': (e) => this.mouseMove(e),
+            'mouse:up': (e) => this.mouseUp(e)
+        });
+
+        this.loadImg(this.canvasWdt, this.canvasHgt)
+    }
+
+    /**
+     * Imposta l'immagine corrente come background del canvas: l'immagine viene recuperata dal server passando
+     * le dimensioni del canvas.
+     * Una volta caricata l'immagine, creo un rettangolo per ogni tag associato all'immagine a seconda dei quattro angoli.
+     * Ad ogni rettangolo vengono settate le funzioni di handler per gli eventi di modifica.
+     * @see modifyingRect evento richiamato quando il rettangolo è in modifica
+     * @see modifiedRect evento richiamato quando il rettangolo termina le modifiche
+     * Infine viene aggiunto il nome del tag all'angolo in alto a destra creando un rettangolo separato per esso.
+     * @param {*} canvasWdt larghezza del canvas
+     * @param {*} canvasHgt altezza del canvas
+     */
     loadImg(canvasWdt, canvasHgt) {
         // recupero dal server l'immagine iniziale con le dimensioni pari a quelle del canvas e inserisco vecchi tag
         this.canvas.setBackgroundImage(urlMongo + "/img/file/" + this.state.images[this.props.count]._id + "?width=" + canvasWdt + "&height=" + canvasHgt, () => {
@@ -131,7 +161,16 @@ export class CanvasFabric extends Component {
         // durante le modifiche il contenitore del tag diventa invisibile
         this.activeTag.visible = false;
     }
-    // DA CONTROLLARE
+
+    /**
+     * Quando il rettangolo termina le modifiche di ridimensionamento bisogna spostare anche il 
+     * rettangolo contenitore del tag associato.
+     * Vengono recuperate le nuove coordinate del rettangolo a cui si sono apportate modifiche.
+     * @see getXY 
+     * Si recupera l'oggetto contenitore del nome del tag associato, si rimuove dal canvas 
+     * e si riaggiunge con le coordinate modificate.
+     * @param {*} e contiene le informazioni del rettangolo a cui si hanno apportato modifiche
+     */
     modifiedRect = (e) => {
         // ottengo le nuove cordinate del rettangolo
         const [x, y] = this.getXY(e.target)
@@ -152,6 +191,13 @@ export class CanvasFabric extends Component {
         this.canvas.add(this.activeTag);
     }
 
+    /**
+     * Se il mouse effettua il click in una zona vuota consente di iniziare la procedura di creazione 
+     * di un nuovo rettangolo, altrimenti se interrompe si ha cliccato su un contenitore di tag o 
+     * non si ha selezionato un tag con cui iniziare la procedura di tagging 
+     * @param {*} e contiene le informazioni del canvas nel punto in cui si ha cliccato, se si clicca 
+     * sopra un oggetto si ha anche il riferimento ad esso
+     */
     mouseDown = (e) => {
         if (e.target !== null && e.target.data === "TAGNAME") return;
         // se nessun tag è stato selezionato blocco tutto e stampo a video il messaggio di errore
@@ -170,6 +216,10 @@ export class CanvasFabric extends Component {
         this.canvas.setActiveObject(this.activeRect);
     }
 
+    /**
+     * Se non si ha nessun rettangolo in fase di creazione si interrompe altrimenti si aggiornano le coordinate
+     * @param {*} e contiene le informazioni del canvas nel punto in cui si sta muovendo il mouse
+     */
     mouseMove = (e) => {
         // se non ho nessun rettangolo attivo significa che non sono in fase di creazione
         if (this.activeRect === null) return;
@@ -180,6 +230,14 @@ export class CanvasFabric extends Component {
         this.canvas.renderAll()
     }
 
+    /**
+     * Si recupera l'oggetto attivo e se è un rettangolo in fase di creazione si controlla che abbia 
+     * spessore (in altezza o in larghezza), in caso negativo si rimuove l'oggetto e non si salvano le 
+     * proprietà. Se il rettangolo ha proprietà corrette allora si procede a creare il contenitore di tag
+     * associato.
+     * @see createTagName
+     * @param {*} e contiene le informazioni del canvas nel punto in cui si alza il mouse
+     */
     mouseUp = (e) => {
         // se non ho selezionato il tag interrompo, il messaggio viene visualizzato in mouseDown
         if (this.state.selectedTag === null) return;
@@ -202,6 +260,17 @@ export class CanvasFabric extends Component {
         this.createTagName(rect);
     }
 
+    /**
+     * Crea un nuovo rettangolo impostando varie proprietà e associando le funzioni di handler per le modifiche
+     * @see modifiedRect
+     * @see modifyingRect
+     * @param {*} x 
+     * @param {*} y 
+     * @param {*} width 
+     * @param {*} height 
+     * @param {*} spanTag informazioni del tag con cui si sta creando il rettangolo
+     * @param {*} colorBackground colore di background quando l'oggetto è selezionato
+     */
     createRect(x, y, width, height, spanTag, colorBackground) {
         let newRect = new fabric.Rect({
             left: x,
@@ -231,6 +300,15 @@ export class CanvasFabric extends Component {
         return newRect;
     }
 
+    /**
+     * Recupera le coordinate corrette del rettangolo e crea un contenitore associato
+     * Si imposta anche la funzione di handler nel caso in cui si clicchi sopra di esso.
+     * Se si clicca sopra il contenitore si recupera il rettangolo associato, lo si setta come oggetto attivo
+     *  e si setta un metadato per riconoscere che il rettangolo era già stato inserito nel canvas e che si 
+     * deve procedere alla modifica di esso 
+     * @see getXY
+     * @param {*} rect il rettangolo a cui si vuole associare il contenitore di tag
+     */
     createTagName(rect) {
         let [x, y] = this.getXY(rect);
         let tagName = new fabric.Textbox(rect.name, {
@@ -269,6 +347,11 @@ export class CanvasFabric extends Component {
         })
     }
 
+    /**
+     * A seconda dell'oggetto attivo si procede a recuperare il contenitore associato e si rimouvono 
+     * entrambi gli oggetti dal canvas
+     * @see getXY
+     */
     startDelete = () => {
         // se non ho nessun rettangolo selezionato annullo
         if (this.canvas.getActiveObject() === null) return;
@@ -297,6 +380,13 @@ export class CanvasFabric extends Component {
         })
     }
 
+    /**
+     * Si controlla se la lunghezza o l'altezza scalate siano maggiori di 0, in caso affermativo 
+     * si restituiscono semplicemente la x e la y con sommata ed esse un valore identificativo che dovrebbe
+     * corrispondere alla larghezza dello stroke del rettangolo. In caso negativo si sommano la x e la y con la 
+     * larghezza e l'altezza dell'oggetto rispettivamente e si sottrae uno ad entrambe sempre a causa dello stroke
+     * @param {*} item oggetto da cui recuperare le coordinate dell'angolo top-left
+     */
     getXY(item) {
         // recupero coordinate in modo da avere sempre quelle dell'angolo in alto a sinistra
         let x = item.getScaledWidth() > 0 ? item.left + 5 : item.left + item.getScaledWidth() - 1;
@@ -304,8 +394,15 @@ export class CanvasFabric extends Component {
         return [x, y]
     }
 
+    /**
+     * Richiamata al click sul pulsante di salvataggio del tagging effettuato sull'immagine
+     * Procede ad effettuare il salvataggio sul db dei tag presenti nel canvas creando oggetti
+     * con proprietà specifiche per il db.
+     * Una volta effettuato il salvataggio si passa il valore di incremento alla sidebar
+     * @see accept in Home.component
+     */
     acceptSentences = () => {
-        if (this.props.count < this.state.images.length - 1) {
+        if (this.props.count < this.state.images.length) {
             let list = this.state.images;
             list[this.props.count].spans = [];
             this.canvas.getObjects().forEach(item => {
@@ -331,14 +428,23 @@ export class CanvasFabric extends Component {
         }
     }
 
+    /**
+     * Richiamata al click sul pulsante di skip, passa alla sidebar il valore d'incremento
+     * @see ignore in Home.component
+     */
     ignoreSentences = () => {
-        if (this.props.count < this.state.images.length - 1) {
+        if (this.props.count < this.state.images.length) {
             this.props.ignore(100 / this.state.images.length);
         } else {
             App.visualizeToast('warn', 'Warning', "No more elements are present")
         }
     }
 
+    /**
+     * Richiamata da Home.component dopo aver incrementato il valore del count, consente di passare
+     * al tagging dell'immagine successiva
+     * @see loadImg 
+     */
     nextImages() {
         if (this.state.images[this.props.count] !== undefined) {
             this.startDeleteAll();
@@ -346,20 +452,33 @@ export class CanvasFabric extends Component {
         }
     }
 
+    /**
+     * Richiamata da Home.component dopo aver decrementato il valore del count, consente di passare
+     * al tagging dell'immagine precedente
+     * @see loadImg
+     */
     previous() {
-        console.log("previos", this.props.count)
+        if(this.props.count === this.state.images.length - 1) this.loadCanvas()
         this.startDeleteAll();
         this.loadImg(this.canvasWdt, this.canvasHgt)
     }
 
+    /**
+     * Richiamata al click sul pulsante back, passa il valore di decremento alla sidebar
+     * @see back
+     */
     previousSentences = () => {
         if (this.props.count !== 0) {
             this.props.back(100 / this.state.images.length);
         }
     }
 
+    /**
+     * Al tag selezionato viene impostato il colore di background per far visualizzare all'utente
+     * il colore con cui si procederà ad effettuare l'operazione di tagging
+     * @param {*} tag riferimento al tag su cui si ha cliccato nel TagVisualizer.component
+     */
     onTagSelected = (tag) => {
-        console.log(tag)
         if (tag === null || tag === undefined) return;
         console.log("selectTAG", this.state.selectedTag)
         if (tag !== this.state.selectedTag) {

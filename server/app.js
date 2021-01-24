@@ -54,6 +54,7 @@ app.post('/login', usr.login)
 app.post('/register', /*jwt.verifyToken,*/ usr.register)
 
 app.get('/tags', POS.getAllTag)
+app.get('/tags/count', POS.getTagAndCount)
 app.get('/img/tags', img.getAllTag)
 app.get('/img/tags/count', img.getTagAndCount)
 app.get('/user/info', jwt.verifyToken, usr.tagCount)

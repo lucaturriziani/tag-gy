@@ -5,9 +5,11 @@ import { ProgressBar } from 'primereact/progressbar';
 import { Avatar } from 'primereact/avatar';
 import { Dropdown } from 'primereact/dropdown';
 import { Checkbox } from 'primereact/checkbox';
+import { ScrollTop } from 'primereact/scrolltop';
+import { ScrollPanel } from 'primereact/scrollpanel';
 import styled from 'styled-components';
 import './Sidebar.css';
-import { getTagCount } from '../../service/db.service';
+import { getTagCount, getTagAndCount } from '../../service/db.service';
 
 const Line = styled.hr`
     height: 1%;
@@ -22,26 +24,45 @@ export class SidebarMenu extends Component {
             collectionz: [],
             user: null,
             firstLetter: null,
-            tagCount: 0
+            tagCount: 0,
+            tags: []
         };
     }
 
     componentDidMount() {
         this.setState({
             collectionz: [
-                { name: "sentences", code: "sentences" },
-                { name: "images", code: "images" }
+                { name: "images", code: "images" },
+                { name: "sentences", code: "sentences" }       
             ]
         });
         let auth = JSON.parse(sessionStorage.getItem("token"));
         this.setState({
             user: auth.username.toUpperCase(),
         }, () => this.setState({ firstLetter: this.state.user.substring(0, 1) }))
+        this.getCountOfTag();
+    }
+
+    onShow = () => {
+        this.getInfoUser();
+        this.getCountOfTag();
     }
 
     getInfoUser = () => {
         getTagCount().then(res => {
             this.setState({ tagCount: res.data.tagCount })
+        })
+    }
+
+    getCountOfTag = () => {
+        let dbName = '';
+        if (this.props.selectedCollz.name === 'images') dbName = '/img';
+        getTagAndCount(dbName).then(res => {
+            let tags = res.data;
+            tags.sort(function (a, b) {
+                return a.tag.localeCompare(b.tag)
+            })
+            this.setState({ tags: res.data })
         })
     }
 
@@ -55,7 +76,7 @@ export class SidebarMenu extends Component {
                         </Button>
                     </div>
                 </div>
-                <Sidebar visible={this.state.visible} position="right" baseZIndex={1000000} onShow={() => this.getInfoUser()} onHide={() => this.setState({ visible: false })}>
+                <Sidebar visible={this.state.visible} position="right" baseZIndex={1000000} onShow={() => this.onShow()} onHide={() => this.setState({ visible: false })}>
                     <h1>tag-gy</h1>
                     <Line></Line>
                     <div className="card">
@@ -87,6 +108,19 @@ export class SidebarMenu extends Component {
                         <div className="menu-option">IGNORE</div>
                         <div>{this.props.ignore}</div>
                     </div>
+                    <h4>TAGS SAVED ON DB</h4>
+                    <div>
+                        <ScrollPanel style={{ height: '200px' }}>
+                            {this.state.tags.length > 0 ? this.state.tags.map(item => {
+                                return <div className="p-d-flex p-jc-between" key={item.tag}>
+                                    <div className="menu-option">{item.tag}</div>
+                                    <div className="p-mr-3">{item.count}</div>
+                                </div>
+                            }) : null}
+                            <ScrollTop target="parent" threshold={40} className="custom-scrolltop" icon="pi pi-arrow-up" />
+                        </ScrollPanel>
+                    </div>
+
                 </Sidebar>
             </>
         )
