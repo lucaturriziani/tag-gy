@@ -20,7 +20,7 @@ exports.login = (req, res) => {
         });
 
         // return the information including token as JSON
-        res.status(200).send({ auth: true, tagCount: usr.tagCount, username: usr.username, token: token });
+        res.status(200).send({ auth: true, username: usr.username, token: token });
     });
 }
 

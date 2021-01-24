@@ -30,7 +30,7 @@ export class Login extends Component {
         login(this.state.usr, this.state.pwd).then(res => {
             const jwt = res.data.token;
             sessionStorage.setItem("token", JSON.stringify(res.data));
-            axios.defaults.headers.put['x-access-token'] = jwt;
+            axios.defaults.headers.common['x-access-token'] = jwt;
             this.setState({token: jwt});
         }).catch(err => {
             App.visualizeToast("error", "Error", err.toString());

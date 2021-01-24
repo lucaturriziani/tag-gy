@@ -91,7 +91,7 @@ export class CanvasFabric extends Component {
         this.canvas.setBackgroundImage(urlMongo + "/img/file/" + this.state.images[this.props.count]._id + "?width=" + canvasWdt + "&height=" + canvasHgt, () => {
             this.canvas.renderAndReset();
             this.state.images[this.props.count].spans.forEach(item => {
-                let spanTag = this.state.availTag.find(tag => { return tag.name = item.label })
+                let spanTag = this.state.availTag.find(tag => { return tag.name === item.label })
                 let colorBackground = spanTag.color.replace(')', ', 0.3)');
                 let rect = new fabric.Rect({
                     left: item.x,
@@ -358,12 +358,10 @@ export class CanvasFabric extends Component {
         }
     }
 
-    /**
-     * FA CASINO QUANDO PASSO ALLA SECONDA FOTO E CERCO DI CAMBIARE TAG
-     * @param {*} tag 
-     */
     onTagSelected = (tag) => {
+        console.log(tag)
         if (tag === null || tag === undefined) return;
+        console.log("selectTAG", this.state.selectedTag)
         if (tag !== this.state.selectedTag) {
             if (this.state.selectedTag !== null) {
                 document.getElementById('tag-' + this.state.selectedTag.name).removeAttribute('style');
