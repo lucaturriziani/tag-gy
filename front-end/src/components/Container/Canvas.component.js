@@ -65,6 +65,7 @@ export class CanvasFabric extends Component {
                             fabric.Object.prototype.transparentCorners = false;
                             fabric.Object.prototype.hasBorders = false;
                             fabric.Object.prototype.setControlVisible('mtr', false)
+                            fabric.Object.prototype.perPixelTargetFind = true;
                         });
                     };
                 })
@@ -82,6 +83,8 @@ export class CanvasFabric extends Component {
      * @see mouseDown
      * @see mouseMove
      * @see mouseUp
+     * @see selectionActive
+     * @see deselection
      * Infine verrà caricata l'immagine corrente con i relativi tag
      * @see loadImg
      */
@@ -92,14 +95,16 @@ export class CanvasFabric extends Component {
         this.canvas = new fabric.Canvas('c', {
             selection: false,
             width: this.canvasWdt,
-            height: this.canvasHgt,
+            height: this.canvasHgt
         });
 
         // mouse event handler
         this.canvas.on({
             'mouse:down': (e) => this.mouseDown(e),
             'mouse:move': (e) => this.mouseMove(e),
-            'mouse:up': (e) => this.mouseUp(e)
+            'mouse:up': (e) => this.mouseUp(e),
+            'before:selection:cleared': (e) => this.deselection(),
+            'selection:created': (e) => this.selectionActive()
         });
 
         this.loadImg(this.canvasWdt, this.canvasHgt)
@@ -155,6 +160,21 @@ export class CanvasFabric extends Component {
                 this.canvas.renderAndReset();
             })
         })
+    }
+
+    /**
+     * Per problemi di overlay, quando la selezione è attiva devo poter spostare gli oggetti considerandoli box, 
+     * mentre quando la selezione è disattivata devo poter selezionare gli oggetti solo dove pieni 
+     * e in particolare cliccando sul contenitore di tag. 
+     * Selezionando o deselezionando un rettangolo cambierà il puntatore del mouse a video.
+     */
+    selectionActive = () => {
+        fabric.Object.prototype.perPixelTargetFind = false;
+        this.canvas.getActiveObject().hoverCursor = 'grab';
+    }
+    deselection = () => {
+        fabric.Object.prototype.perPixelTargetFind = true;
+        this.canvas.getActiveObject().hoverCursor = 'default';
     }
 
     modifyingRect = (e) => {
