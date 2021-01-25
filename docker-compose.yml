@@ -1,0 +1,29 @@
+version: "2"
+
+services:
+    client:
+        build: ./front-end
+        container_name: webapp
+        image: webapp
+        restart: always
+        ports:
+            - "3000:3000"
+        links:
+            - api
+    api:
+        build: ./server
+        container_name: api
+        image: webapp-api
+        restart: always
+        ports:
+            - "3001:3001"
+        depends_on:
+            - mongo
+    mongo:
+        image: mongo
+        restart: always
+        container_name: mongodb
+        volumes:
+            - ./data:/data/db
+        ports:
+            - 27017:27017
