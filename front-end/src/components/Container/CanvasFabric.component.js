@@ -376,7 +376,7 @@ export class CanvasFabric extends Component {
      */
     startDelete = () => {
         // se non ho nessun rettangolo selezionato annullo
-        if (this.canvas.getActiveObject() === null) return;
+        if (this.canvas.getActiveObject() === null || this.canvas.getActiveObject() === undefined) return;
         // recupero il rettangolo attivo
         const rect = this.canvas.getActiveObject();
         // cerco il tag relativo 
