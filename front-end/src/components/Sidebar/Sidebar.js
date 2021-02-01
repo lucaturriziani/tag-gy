@@ -9,7 +9,7 @@ import { ScrollTop } from 'primereact/scrolltop';
 import { ScrollPanel } from 'primereact/scrollpanel';
 import styled from 'styled-components';
 import './Sidebar.css';
-import { getTagCount, getTagAndCount } from '../../service/db.service';
+import { getTagCount, getTagAndCount } from '../../services/db.service';
 
 const Line = styled.hr`
     height: 1%;

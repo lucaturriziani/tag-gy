@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { SidebarMenu } from '../Sidebar/Sidebar';
 import { ContainerPosTagging } from '../Container/ContainerPosTagging.component';
-import { CanvasFabric } from '../Container/Canvas.component';
+import { CanvasFabric } from '../Container/CanvasFabric.component';
 
 export class Home extends Component {
 

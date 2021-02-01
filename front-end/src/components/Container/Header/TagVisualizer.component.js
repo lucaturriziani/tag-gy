@@ -29,6 +29,10 @@ export class TagVisualizer extends Component {
         this.props.onTagSelected(this.props.availTag[0])
     }
 
+    /**
+     * Consente la visualizzazione della modale per l'inserimento di nuovi tag
+     * @param {*} position 
+     */
     onClick(position) {
         let state = {
             displayModal: true
@@ -44,22 +48,37 @@ export class TagVisualizer extends Component {
         this.setState(state);
     }
 
+    /**
+     * Rende invisibile la modale di creazione tag
+     */
     onHide() {
         this.setState({ displayModal: false });
     }
 
+    /**
+     * Controlla che il valore che si sta scrivendo rispetti delle regole:
+     * - deve essere diverso dalla stringa vuota
+     * - deve contenere al massimo 10 caratteri
+     * @param {string} value valore del campo presente nella modale
+     */
     onChange(value) {
         this.setState({ error2: false });
         this.setState({ value: value });
-        if (value.includes(" ") || value.length > 8 || value === '') {
+        if (value.includes(" ") || value.length > 10 || value === '') {
             this.setState({ error1: true })
             return;
         }
         this.setState({ error1: false })
     }
 
+    /**
+     * Alla conferma dell'inserimento del tag, viene controllato che il tag non sia già stato inserito.
+     * Se il tag non è presente allora viene aggiunto alla lista e gli viene associato un colore
+     * @see colorTag
+     * @typedef {{name: string, color: string}} tag
+     */
     addTag() {
-        if (this.state.value.includes(" ") || this.state.value.length > 8 || this.state.value === '') {
+        if (this.state.value.includes(" ") || this.state.value.length > 10 || this.state.value === '') {
             return;
         }
         const index = this.props.availTag.findIndex(t => { return t.name.toUpperCase() === this.state.value.toUpperCase() });
@@ -74,6 +93,12 @@ export class TagVisualizer extends Component {
         this.setState({ error2: true });
     }
 
+    /**
+     * Restituisce un colore random da associare al tag
+     * @see brightColorRandom in utils/color.js
+     * @see colorTag in utils/color.js
+     * @returns {string} 
+     */
     colorTag(){
         let color;
         if(this.props.collz === "images") color = brightColorRandom();
@@ -103,7 +128,7 @@ export class TagVisualizer extends Component {
                                     <InputText id="newTag" value={this.state.value} onChange={(e) => this.onChange(e.target.value)} />
                                     <label htmlFor="newTag">Tag name</label>
                                 </span>
-                                {this.state.error1 ? <small id="newTag-help" className="p-invalid p-d-block">The name must not contain space and it must have at most 8 characters. </small> : null}
+                                {this.state.error1 ? <small id="newTag-help" className="p-invalid p-d-block">The name must not contain space and it must have at most 10 characters. </small> : null}
                                 {this.state.error2 ? <small id="newTag-help" className="p-invalid p-d-block">The name tag to add is alredy used.</small> : null}
                             </div>
                         </Dialog>

@@ -5,7 +5,7 @@ import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import './Login.style.css';
 import { Redirect } from "react-router";
-import { login } from '../../service/auth.service';
+import { login } from '../../services/auth.service';
 import { App } from "../App";
 import axios from "axios";
 

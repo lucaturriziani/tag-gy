@@ -27,7 +27,7 @@ db.mongoose
     process.exit();
   });
 
-const POS = require("./controllers/sentences.controller.js");
+const POS = require("./controllers/sentence.controller.js");
 const img = require("./controllers/image.controller.js");
 const usr = require("./controllers/user.controller.js");
 const jwt = require("./jwt/jwt.middleware.js");

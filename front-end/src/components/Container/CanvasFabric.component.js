@@ -1,14 +1,14 @@
 import { Card } from "primereact/card";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Component } from "react";
-import { getAllTag } from "../../service/db.service";
-import * as ImgService from "../../service/img.service";
+import { getAllTag } from "../../services/db.service";
+import * as ImgService from "../../services/img.service";
 import { brightColorRandom } from "../../utils/color";
 import { App } from "../App";
 import { GroupButtonsFooter } from "./Footer/GroupButtonsFooter.component";
 import { TagVisualizer } from "./Header/TagVisualizer.component";
 import { Button } from 'primereact/button';
-import './ContainerImgTagging.style.css';
+import './CanvasFabric.style.css';
 import { fabric } from 'fabric';
 import { urlMongo } from "../../environments/environment";
 
@@ -39,6 +39,8 @@ export class CanvasFabric extends Component {
      * - recupero delle immagini e dei tag creati su di essa;
      * - caricamento del canvas con la prima immagine e visualizzazione dei tag presenti per qull'immagine;
      * @see loadCanvas
+     * @see brightColorRandom in utils/color.js
+     * @typedef {{name: string, color: string}} tag
      */
     componentDidMount() {
         window.$currentTag = []
@@ -118,8 +120,8 @@ export class CanvasFabric extends Component {
      * @see modifyingRect evento richiamato quando il rettangolo è in modifica
      * @see modifiedRect evento richiamato quando il rettangolo termina le modifiche
      * Infine viene aggiunto il nome del tag all'angolo in alto a destra creando un rettangolo separato per esso.
-     * @param {*} canvasWdt larghezza del canvas
-     * @param {*} canvasHgt altezza del canvas
+     * @param {number} canvasWdt larghezza del canvas
+     * @param {number} canvasHgt altezza del canvas
      */
     loadImg(canvasWdt, canvasHgt) {
         // recupero dal server l'immagine iniziale con le dimensioni pari a quelle del canvas e inserisco vecchi tag
@@ -284,12 +286,12 @@ export class CanvasFabric extends Component {
      * Crea un nuovo rettangolo impostando varie proprietà e associando le funzioni di handler per le modifiche
      * @see modifiedRect
      * @see modifyingRect
-     * @param {*} x 
-     * @param {*} y 
-     * @param {*} width 
-     * @param {*} height 
-     * @param {*} spanTag informazioni del tag con cui si sta creando il rettangolo
-     * @param {*} colorBackground colore di background quando l'oggetto è selezionato
+     * @param {number} x 
+     * @param {number} y 
+     * @param {number} width 
+     * @param {number} height 
+     * @param {@link tag} spanTag informazioni del tag con cui si sta creando il rettangolo
+     * @param {string} colorBackground colore di background quando l'oggetto è selezionato
      */
     createRect(x, y, width, height, spanTag, colorBackground) {
         let newRect = new fabric.Rect({
@@ -420,6 +422,7 @@ export class CanvasFabric extends Component {
      * con proprietà specifiche per il db.
      * Una volta effettuato il salvataggio si passa il valore di incremento alla sidebar
      * @see accept in Home.component
+     * @typedef {{x: number, y: number, w: number, h: number, label: string, aCoords: fabric.Object}} imageToDb
      */
     acceptSentences = () => {
         if (this.props.count < this.state.images.length) {
@@ -485,7 +488,7 @@ export class CanvasFabric extends Component {
 
     /**
      * Richiamata al click sul pulsante back, passa il valore di decremento alla sidebar
-     * @see back
+     * @see back in Home.component
      */
     previousSentences = () => {
         if (this.props.count !== 0) {
@@ -496,7 +499,7 @@ export class CanvasFabric extends Component {
     /**
      * Al tag selezionato viene impostato il colore di background per far visualizzare all'utente
      * il colore con cui si procederà ad effettuare l'operazione di tagging
-     * @param {*} tag riferimento al tag su cui si ha cliccato nel TagVisualizer.component
+     * @param {@link tag} tag riferimento al tag su cui si ha cliccato nel TagVisualizer.component
      */
     onTagSelected = (tag) => {
         if (tag === null || tag === undefined) return;

@@ -44,7 +44,3 @@
 .add-button{
     background: #9C27B0;
 }
-
-.tag-selected{
-    background-color: var(--primary-color);
-}

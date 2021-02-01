@@ -4,7 +4,7 @@ const user = db.user;
 const fs = require("fs");
 
 exports.create = (req, res) => {
-  const rawdata = fs.readFileSync('./resource/POS_init.json');
+  const rawdata = fs.readFileSync('./resources/POS_init.json');
   const list = JSON.parse(rawdata);
   pieceOfSpeech.insertMany(list)
     .then(data => {

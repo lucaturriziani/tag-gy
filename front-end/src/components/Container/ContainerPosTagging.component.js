@@ -6,8 +6,8 @@ import { GroupButtonsFooter } from './Footer/GroupButtonsFooter.component';
 import { App } from '../App'
 import { TagVisualizer } from "./Header/TagVisualizer.component";
 import { ProgressSpinner } from 'primereact/progressspinner';
-import { get, put } from '../../service/pos.service';
-import { getAllTag } from '../../service/db.service';
+import { get, put } from '../../services/pos.service';
+import { getAllTag } from '../../services/db.service';
 import { colorRandom } from '../../utils/color';
 
 export class ContainerPosTagging extends Component {

@@ -4,9 +4,13 @@ const user = db.user;
 const path = require('path');
 const fs = require('fs');
 const sharp = require('sharp');
-const directoryPath = path.join(__dirname, "../resource/images/");
+const directoryPath = path.join(__dirname, "../resources/images/");
+const dataDB = path.join(directoryPath,"../images/dataDB/")
 
 exports.create = (req, res) => {
+  if (!fs.existsSync(dataDB)){
+    fs.mkdirSync(dataDB);
+  }
   fs.readdir(directoryPath, function (err, files) {
     if (err) {
       res.status(500).send({
@@ -17,6 +21,7 @@ exports.create = (req, res) => {
     files.forEach(function (file) {
       if (file.includes(".JPG") || file.includes(".png")
         || file.includes(".PNG") || file.includes(".jpg")) {
+        fs.renameSync(directoryPath+file,dataDB+file);
         list.push({
           image: file,
           spans: []
@@ -138,7 +143,7 @@ exports.getImage = (req, res) => {
   }
   image.findById(req.params.id).then(data => {
     // Get the resized image
-    resize(directoryPath + data.image, width, height).pipe(res)
+    resize(dataDB + data.image, width, height).pipe(res)
   }).catch(err => {
     res.status(404).send({
       message: `Cannot find object with id=${req.params.id}. Not found!`
