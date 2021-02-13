@@ -24,7 +24,10 @@ Se l'applicazione vuole essere aggiunta in un contenitore docker la procedura è
 ```bash
 docker-compose up
 ```
-Prima di avviare questo comando è consigliato guardare come viene inizializzato il db in modo tale da modificare il file per l'aggiunta dei dati nella collezione *sentences* e inserire nella corretta cartella le immagini che si vogliono aggiungere alla collezione *images*.
+Prima di avviare questo comando è consigliato guardare come viene inizializzato il db in modo tale da modificare il file per l'aggiunta dei dati nella collezione *sentences* e inserire nella corretta cartella le immagini che si vogliono aggiungere alla collezione *images*. È possibile aggiungere immagini anche in seguito utilizzando il comando:
+```bash
+docker cp /(local_path)  (container_id):/(to_the_place_you_want_the_file_to_be)
+```
 
 **N.B.** In entrambi i casi se l'applicativo vuole essere raggiungibile da dispositivi diversi da quelli in cui è stato avviato è necessario modificare il file *environment.js* presente nella cartella */front-end/src/environment*. Basterà commentare la riga 2 e decommentare la riga 5 cambiando l'indirizzo ip presente con quello della macchina su cui girerà l'applicazione (la porta 3001 deve essere lasciata).
 
