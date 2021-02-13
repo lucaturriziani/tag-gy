@@ -299,7 +299,7 @@ export class CanvasFabric extends Component {
             top: y,
             fill: 'rgba(255,255,255,0.0)',
             width: width,
-            length: height,
+            height: height,
             stroke: spanTag.color,
             strokeWidth: 6,
             strokeUniform: true,

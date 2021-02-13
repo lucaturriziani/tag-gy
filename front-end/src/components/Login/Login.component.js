@@ -26,7 +26,6 @@ export class Login extends Component {
     }
 
     handleSubmit() {
-        console.log(this.state.usr, this.state.pwd)
         login(this.state.usr, this.state.pwd).then(res => {
             const jwt = res.data.token;
             sessionStorage.setItem("token", JSON.stringify(res.data));
